@@ -1,0 +1,3 @@
+#Archivos y carpetas ignoradas por git
+.env
+./env
