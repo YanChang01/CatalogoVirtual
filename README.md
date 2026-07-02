@@ -1,7 +1,7 @@
 # CatalogoVirtual
 Esta es una web diseñada como catálogo virtual para un negocio de ventas de SexToys
 
-Instrucciones y requerimientos para implementar el backend
+Instrucciones y Requerimientos para implementar el backend
 1- Descargar e instalar Python 3.14.2
 2- Descargar e instalar una versión reciente de PostgreSQL y PgAdmin 4, preferentemente las versiones 17 y 9.14 respectivamente.
 3- Descargar e instalar una versión reciente de Visual Studio Code, acordar con el líder del proyecto cuales son las extensiones adicionales que se necesitan descargar e instalar.
