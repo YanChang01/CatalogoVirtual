@@ -2,7 +2,7 @@ from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from core.config import settings
-from routers import users, categorys, products
+from routers import users, categories, products
 
 # ================= APP FASTAPI =================
 app = FastAPI(
@@ -13,7 +13,7 @@ app = FastAPI(
 
 # Routers
 app.include_router(users.router)
-app.include_router(categorys.router)
+app.include_router(categories.router)
 app.include_router(products.router)
 
 # Middlewares
