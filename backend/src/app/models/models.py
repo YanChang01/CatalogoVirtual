@@ -23,8 +23,8 @@ class HttpUrlType(TypeDecorator):
 #Clase Base
 class Base(SQLModel):
     #Atributos comunes aquí
-    created_at: Optional[datetime] = Field(default=None, index=True, sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False))
-    updated_at: Optional[datetime] = Field(default=None, index=True, sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False))
+    created_at: Optional[datetime] = Field(default=None, sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True))
+    updated_at: Optional[datetime] = Field(default=None, sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, index=True))
     is_deleted: bool = Field(default=False, index=True, nullable=False)
 
 class User(Base, table=True):
