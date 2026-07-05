@@ -10,7 +10,7 @@ from alembic import context
 from dotenv import load_dotenv
 from os import getenv
 
-from src.app.models import models
+from app.models import models
 
 
 #Cargar Variables de Entorno.
