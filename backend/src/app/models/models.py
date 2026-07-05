@@ -1,9 +1,13 @@
 from sqlmodel import SQLModel, Field, Relationship, Column, func, DateTime
 from sqlalchemy.types import TypeDecorator, String
-from pydantic import EmailStr, HttpUrl
+from pydantic import EmailStr, HttpUrl, StringConstraints
 from datetime import datetime
 from typing import Optional, List
 from decimal import Decimal
+from typing import Annotated
+
+#Tipo personalizado para Phone
+PhoneStr = Annotated[str, StringConstraints(min_length=8, max_length=8, pattern=r'^\d{8}$')]
 
 #Decorador de tipo para HttpUrl
 class HttpUrlType(TypeDecorator):
@@ -31,7 +35,7 @@ class User(Base, table=True):
     __tablename__ = "users"
     id: Optional[int] = Field(default=None, primary_key=True)
     fullname: str = Field(index=True, nullable=False, min_length=2, max_length=100)
-    phone: str = Field(unique=True, index=True, nullable=False, min_length=8, max_length=8, pattern=r'^\d{8}$')
+    phone: PhoneStr = Field(unique=True, index=True, nullable=False)
     email: EmailStr = Field(unique=True, index=True, nullable=False)
     password: str = Field(nullable=False)
     
