@@ -1,3 +1,5 @@
 #Archivos y carpetas ignoradas por git
 .env
 ./env
+.pyc
+./__pycache__
