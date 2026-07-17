@@ -23,14 +23,11 @@ class HttpUrlType(TypeDecorator):
     def process_result_value(self, value, dialect) -> Optional[HttpUrl]:
         """Convierte el string de la BD de vuelta a HttpUrl."""
         return HttpUrl(value) if value is not None else None
-
-#Clase Base
+    
 class Base(SQLModel):
-    #Atributos comunes aquí
-    created_at: datetime = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
-    updated_at: datetime = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, index=True)
-    is_deleted: bool = Field(default=False, index=True, nullable=False)
-
+    #Atributos comúnes aquí
+    pass
+    
 class User(Base, table=True):
     __tablename__ = "users"
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -38,11 +35,17 @@ class User(Base, table=True):
     phone: PhoneStr = Field(unique=True, index=True, nullable=False)
     email: EmailStr = Field(unique=True, index=True, nullable=False)
     password: str = Field(nullable=False)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, index=True))
+    is_deleted: bool = Field(default=False, index=True, nullable=False)
     
 class Category(Base, table=True):
     __tablename__ = "categories"
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True, index=True, nullable=False, min_length=3, max_length=100)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, index=True))
+    is_deleted: bool = Field(default=False, index=True, nullable=False)
     
     products: List["Product"] = Relationship(back_populates="category")
     
@@ -55,6 +58,9 @@ class Product(Base, table=True):
     description: Optional[str] = Field(default=None, max_length=500)
     is_active: bool = Field(default=True, index=True, nullable=False)
     image_url: Optional[HttpUrl] = Field(default=None, sa_type=HttpUrlType, max_length=500)
+    created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True))
+    updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, index=True))
+    is_deleted: bool = Field(default=False, index=True, nullable=False)
     
     category: "Category" = Relationship(back_populates="products")
     

@@ -12,73 +12,75 @@ from schemas.schemas import CategoryCreate, CategoryResponse, CategoryUpdate, Ca
 async def create_category(category: CategoryCreate, session: AsyncSession) -> Category:
     #Validar unicidad del name
     query = await session.exec(select(Category).where(Category.name == category.name))
-    db_category: Category = query.first()
     
-    if db_category:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre de la categoría {category.name} ya existe.")
+    if query.first():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"La categoría {category.name} ya existe.")
     
     #Crear la instancia de Base de Datos
-    db_category = Category.model_validate(category)
+    db_category: Category = Category(**category.model_dump())
     session.add(db_category)
+    await session.commit()
+    await session.refresh(db_category)
     
     return db_category
 
 #Read
 async def read_category(name: str, session: AsyncSession) -> Category:
-    query = await session.exec(select(Category).where(Category.name == name))
+    query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
     db_category: Category = query.first()
     
     if not db_category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"La categoría {name} no existe en la base de datos.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría {name} no encontrada.")
 
     return db_category
 
 async def read_categories(session: AsyncSession) -> List[Category]:
-    query = await session.exec(select(Category))
-    db_categories: List[Category] = query.all()
+    query = await session.exec(select(Category).where(Category.is_deleted == False))
     
-    if not db_categories:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen categorías en la base de datos.")
-
-    return db_categories
+    return query.all()
 
 #Update
 async def update_category(name: str, category: CategoryUpdate, session: AsyncSession) -> Category:
-    #Validar que la categoría a actualizar existe
-    query = await session.exec(select(Category).where(Category.name == name))
+    #Buscar la categoría existente no eliminada.
+    query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
     db_category: Category = query.first()
     
     if not db_category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"La categoría {name} no existe en la base de datos.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría {name} no encontrada.")
 
     #Validar que el nuevo nombre de la categoría no esté en uso ya
-    query = await session.exec(select(Category).where(Category.name == category.name))
-    db_category2: Category = query.first()
+    if category.name is not None:
+        query2 = await session.exec(select(Category).where(Category.name == category.name, Category.is_deleted == False))
+        existing = query2.first()
+        
+        if existing and existing.id != db_category.id:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre {category.name} ya está en uso.")
+
+    # Actualizar solo los campos enviados en la instancia
+    update_data = category.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_category, key, value)
     
-    if db_category2:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre {category.name} ya existe en la base de datos.")
-    
-    #Convertir modelo a diccionario para actualizar
-    category_data = category.model_dump(exclude_unset=True)
-    await session.exec(update(Category).where(Category.name == name).values(**category_data))
-    
-    #Obtener la categoría actualizada
-    query = await session.exec(select(Category).where(Category.name == category.name))
-    db_category: Category = query.first()
+    #Actualizar la base de datos
+    session.add(db_category)
+    await session.commit()
+    await session.refresh(db_category)
     
     return db_category
 
 #Delete
 async def delete_category(name: str, session: AsyncSession) -> Category:
     #Validar que la categoría a actualizar existe
-    query = await session.exec(select(Category).where(Category.name == name))
+    query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
     db_category: Category = query.first()
         
     if not db_category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"La categoría {name} no existe en la base de datos.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría {name} no encontrada.")
 
-    #Actualizar el campo is_deleted = True para borrado lógico
-    await session.exec(update(Category).where(Category.name == name).values(is_deleted=True))
+    #Actualizar el campo is_deleted = True para soft delete
+    db_category.is_deleted = True
+    session.add(db_category)
+    await session.commit()
     await session.refresh(db_category)
     
     return db_category

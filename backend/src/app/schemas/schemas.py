@@ -1,8 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import Optional, List
-from pydantic import EmailStr, HttpUrl
-from sqlmodel import SQLModel, Field
+from pydantic import EmailStr, HttpUrl, BaseModel
 
 from models.models import PhoneStr
 
@@ -10,18 +9,18 @@ from models.models import PhoneStr
 # Clases Base
 # ============================
 
-class UserBase(SQLModel):
-    fullname: str = Field(min_length=2, max_length=100)
+class UserBase(BaseModel):
+    fullname: str
     phone: PhoneStr
     email: EmailStr
 
-class CategoryBase(SQLModel):
-    name: str = Field(min_length=3, max_length=100)
+class CategoryBase(BaseModel):
+    name: str
 
-class ProductBase(SQLModel):
-    name: str = Field(min_length=3, max_length=100)
-    price: Decimal = Field(decimal_places=2, max_digits=12, ge=0)
-    description: Optional[str] = Field(default=None, max_length=500)
+class ProductBase(BaseModel):
+    name: str
+    price: Decimal
+    description: Optional[str]
     is_active: bool = True
     image_url: Optional[HttpUrl] = None
     category_id: int
@@ -33,8 +32,8 @@ class ProductBase(SQLModel):
 class UserCreate(UserBase):
     password: str
 
-class UserUpdate(SQLModel):
-    fullname: Optional[str] = Field(default=None, min_length=2, max_length=100)
+class UserUpdate(BaseModel):
+    fullname: Optional[str]
     phone: Optional[PhoneStr] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None
@@ -54,8 +53,8 @@ class UserResponse(UserBase):
 class CategoryCreate(CategoryBase):
     pass
 
-class CategoryUpdate(SQLModel):
-    name: Optional[str] = Field(default=None, min_length=3, max_length=100)
+class CategoryUpdate(BaseModel):
+    name: Optional[str]
 
 class CategoryResponse(CategoryBase):
     id: int
@@ -75,10 +74,10 @@ class CategoryWithProducts(CategoryResponse):
 class ProductCreate(ProductBase):
     pass
 
-class ProductUpdate(SQLModel):
-    name: Optional[str] = Field(default=None, min_length=3, max_length=100)
-    price: Optional[Decimal] = Field(default=None, decimal_places=2, max_digits=12, ge=0)
-    description: Optional[str] = Field(default=None, max_length=500)
+class ProductUpdate(BaseModel):
+    name: Optional[str]
+    price: Optional[Decimal]
+    description: Optional[str]
     is_active: Optional[bool] = None
     image_url: Optional[HttpUrl] = None
     category_id: Optional[int] = None

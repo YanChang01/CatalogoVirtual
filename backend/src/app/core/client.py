@@ -18,7 +18,6 @@ async def get_async_session():
     async with AsyncSession(engine) as session:
         try:
             yield session
-            await session.commit()
         except ValidationError as e:
             await session.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.errors())
