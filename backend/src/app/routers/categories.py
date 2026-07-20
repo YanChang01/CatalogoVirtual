@@ -22,7 +22,7 @@ async def read(name: str, session: AsyncSession = Depends(get_async_session)) ->
     return await read_category(name=name, session=session)
 
 @router.get("/read", status_code=status.HTTP_200_OK, response_model=List[CategoryResponse])
-async def read2(session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
+async def read2(session: AsyncSession = Depends(get_async_session)) -> List[CategoryResponse]:
     
     return await read_categories(session=session)
 
