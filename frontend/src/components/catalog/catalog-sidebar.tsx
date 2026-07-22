@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, X, Check, ChevronUp, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface CatalogSidebarProps {
   search: string;
@@ -105,12 +106,13 @@ export function CatalogSidebar({
           size={14}
           className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
-        <input
+        <Input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar productos..."
-          className="w-full bg-card border border-border text-foreground placeholder:text-muted-foreground text-sm pl-9 pr-4 py-3 focus:outline-none focus:border-primary/50 transition-colors"
+          size="sm"
+          className="pl-9 pr-4"
         />
         {search && (
           <button
@@ -198,7 +200,7 @@ export function CatalogSidebar({
             />
           </div>
           <div className="flex gap-2">
-            <input
+            <Input
               type="number"
               min={0}
               max={priceRange[1]}
@@ -206,10 +208,11 @@ export function CatalogSidebar({
               onChange={(e) =>
                 setPriceRange([Number(e.target.value), priceRange[1]])
               }
-              className="w-full bg-card border border-border text-foreground text-xs px-3 py-2 focus:outline-none focus:border-primary/50"
+              size="sm"
+              className="w-full"
             />
             <span className="text-muted-foreground text-xs self-center">–</span>
-            <input
+            <Input
               type="number"
               min={priceRange[0]}
               max={200}
@@ -217,7 +220,8 @@ export function CatalogSidebar({
               onChange={(e) =>
                 setPriceRange([priceRange[0], Number(e.target.value)])
               }
-              className="w-full bg-card border border-border text-foreground text-xs px-3 py-2 focus:outline-none focus:border-primary/50"
+              size="sm"
+              className="w-full"
             />
           </div>
         </div>
