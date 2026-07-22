@@ -6,6 +6,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/components/products/product-card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const CATEGORIES = [
   {
@@ -362,15 +363,15 @@ export default function HomePage() {
               }}
               className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
             >
-              <input
+              <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
                 required
-                className="flex-1 bg-card border border-border text-foreground placeholder:text-muted-foreground h-10 px-6 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                size="lg"
               />
-              <Button type="submit" variant={"default"} size={"lg"}>
+              <Button type="submit" variant="default" size="lg">
                 Suscribirme
               </Button>
             </form>
