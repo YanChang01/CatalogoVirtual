@@ -33,7 +33,7 @@ class UserCreate(UserBase):
     password: str
 
 class UserUpdate(BaseModel):
-    fullname: Optional[str]
+    fullname: Optional[str] = None
     phone: Optional[PhoneStr] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None
@@ -54,7 +54,7 @@ class CategoryCreate(CategoryBase):
     pass
 
 class CategoryUpdate(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 class CategoryResponse(CategoryBase):
     id: int
@@ -75,9 +75,9 @@ class ProductCreate(ProductBase):
     pass
 
 class ProductUpdate(BaseModel):
-    name: Optional[str]
-    price: Optional[Decimal]
-    description: Optional[str]
+    name: Optional[str] = None
+    price: Optional[Decimal] = None
+    description: Optional[str] = None
     is_active: Optional[bool] = None
     image_url: Optional[HttpUrl] = None
     category_id: Optional[int] = None
