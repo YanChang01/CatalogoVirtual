@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
+from bcrypt import gensalt, hashpw, checkpw
 from jose import jwt, JWTError
 from core.config import settings
 from datetime import datetime
@@ -23,16 +23,19 @@ Estructura del JWT.
 """
 
 oauth2 = OAuth2PasswordBearer(tokenUrl="login")
-cryptography = CryptContext(schemes=[settings.CRYPTOGRAPHY])
 
 def password_hash(password: str) -> str:
-    #Hashea la contraseña usando el contexto configurado.
-    return cryptography.hash(password)
-
+    #Generar una semilla
+    salt = gensalt()
+    #Aplicar hash
+    hashed = hashpw(password.encode('utf-8'), salt)
+    #Devolver hash en forma de string
+    return hashed.decode('utf-8') 
+    
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    #Verifica una contraseña contra su hash.
-    return cryptography.verify(plain_password, hashed_password)
-
+    #Verificar password contra su hash
+    return checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    
 def get_current_user(token: str = Depends(oauth2)) -> EmailStr:
     """
     Decodifica el token JWT y retorna el email del usuario (sub).
