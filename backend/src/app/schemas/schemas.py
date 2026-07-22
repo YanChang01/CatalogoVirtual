@@ -36,7 +36,6 @@ class UserUpdate(BaseModel):
     fullname: Optional[str] = None
     phone: Optional[PhoneStr] = None
     email: Optional[EmailStr] = None
-    password: Optional[str] = None
 
 class UserResponse(UserBase):
     id: int
