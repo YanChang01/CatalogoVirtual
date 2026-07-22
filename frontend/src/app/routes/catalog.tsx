@@ -1,18 +1,15 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router";
 import {
-  Search,
   SlidersHorizontal,
   X,
-  Heart,
-  Star,
   Grid3X3,
   List,
   ChevronDown,
-  ChevronUp,
-  Check,
 } from "lucide-react";
 import ContentLayout from "@/components/layouts/content-layout";
+import { ProductCard } from "@/components/products/product-card";
+import { CatalogSidebar } from "@/components/catalog/catalog-sidebar";
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
@@ -345,58 +342,6 @@ const SORT_OPTIONS = [
 
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
 
-function StarRating({ rating, size = 12 }: { rating: number; size?: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          size={size}
-          fill={s <= Math.round(rating) ? "#c4355a" : "none"}
-          stroke={s <= Math.round(rating) ? "#c4355a" : "#8a7d80"}
-          strokeWidth={1.5}
-        />
-      ))}
-    </div>
-  );
-}
-
-function FilterSection({
-  title,
-  children,
-  defaultOpen = true,
-}: {
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="border-b border-border pb-5 mb-5">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full text-left mb-4 group"
-      >
-        <span className="text-xs tracking-widest uppercase text-foreground">
-          {title}
-        </span>
-        {open ? (
-          <ChevronUp
-            size={14}
-            className="text-muted-foreground group-hover:text-foreground transition-colors"
-          />
-        ) : (
-          <ChevronDown
-            size={14}
-            className="text-muted-foreground group-hover:text-foreground transition-colors"
-          />
-        )}
-      </button>
-      {open && children}
-    </div>
-  );
-}
-
 // ── PAGE ──────────────────────────────────────────────────────────────────────
 
 export default function Catalog() {
@@ -511,366 +456,13 @@ export default function Catalog() {
     (minRating > 0 ? 1 : 0) +
     (priceRange[0] > 0 || priceRange[1] < 200 ? 1 : 0);
 
-  // ── SIDEBAR ────────────────────────────────────────────────────────────────
-
-  const Sidebar = () => (
-    <aside className="w-full md:w-64 shrink-0">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xs tracking-widest uppercase text-foreground">
-          Filtros
-        </h2>
-        {activeFiltersCount > 0 && (
-          <button
-            onClick={clearAll}
-            className="text-xs text-primary hover:text-primary/80 transition-colors"
-          >
-            Limpiar todo ({activeFiltersCount})
-          </button>
-        )}
-      </div>
-
-      {/* Búsqueda */}
-      <div className="relative mb-6">
-        <Search
-          size={14}
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-        />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar productos..."
-          className="w-full bg-card border border-border text-foreground placeholder:text-muted-foreground text-sm pl-9 pr-4 py-3 focus:outline-none focus:border-primary/50 transition-colors"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-          >
-            <X size={12} />
-          </button>
-        )}
-      </div>
-
-      {/* Categoría */}
-      <FilterSection title="Categoría">
-        <div className="flex flex-col gap-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => toggleCategory(cat)}
-              className="flex items-center justify-between text-sm text-left group"
-            >
-              <div className="flex items-center gap-2.5">
-                <div
-                  className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${selectedCategories.includes(cat) ? "bg-primary border-primary" : "border-border group-hover:border-muted-foreground"}`}
-                >
-                  {selectedCategories.includes(cat) && (
-                    <Check size={10} className="text-primary-foreground" />
-                  )}
-                </div>
-                <span
-                  className={`transition-colors ${selectedCategories.includes(cat) ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
-                >
-                  {cat}
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {ALL_PRODUCTS.filter((p) => p.category === cat).length}
-              </span>
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Precio */}
-      <FilterSection title="Precio">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">€{priceRange[0]}</span>
-            <span className="text-muted-foreground">€{priceRange[1]}</span>
-          </div>
-          <div className="relative h-1 bg-muted">
-            <div
-              className="absolute h-full bg-primary"
-              style={{
-                left: `${(priceRange[0] / 200) * 100}%`,
-                right: `${100 - (priceRange[1] / 200) * 100}%`,
-              }}
-            />
-            <input
-              type="range"
-              min={0}
-              max={200}
-              step={5}
-              value={priceRange[0]}
-              onChange={(e) =>
-                setPriceRange([
-                  Math.min(Number(e.target.value), priceRange[1] - 10),
-                  priceRange[1],
-                ])
-              }
-              className="absolute inset-0 w-full opacity-0 cursor-pointer h-1"
-            />
-            <input
-              type="range"
-              min={0}
-              max={200}
-              step={5}
-              value={priceRange[1]}
-              onChange={(e) =>
-                setPriceRange([
-                  priceRange[0],
-                  Math.max(Number(e.target.value), priceRange[0] + 10),
-                ])
-              }
-              className="absolute inset-0 w-full opacity-0 cursor-pointer h-1"
-            />
-          </div>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              min={0}
-              max={priceRange[1]}
-              value={priceRange[0]}
-              onChange={(e) =>
-                setPriceRange([Number(e.target.value), priceRange[1]])
-              }
-              className="w-full bg-card border border-border text-foreground text-xs px-3 py-2 focus:outline-none focus:border-primary/50"
-            />
-            <span className="text-muted-foreground text-xs self-center">–</span>
-            <input
-              type="number"
-              min={priceRange[0]}
-              max={200}
-              value={priceRange[1]}
-              onChange={(e) =>
-                setPriceRange([priceRange[0], Number(e.target.value)])
-              }
-              className="w-full bg-card border border-border text-foreground text-xs px-3 py-2 focus:outline-none focus:border-primary/50"
-            />
-          </div>
-        </div>
-      </FilterSection>
-
-      {/* Valoración */}
-      <FilterSection title="Valoración mínima">
-        <div className="flex flex-col gap-2">
-          {[4, 3, 2, 0].map((r) => (
-            <button
-              key={r}
-              onClick={() => setMinRating(r === minRating ? 0 : r)}
-              className="flex items-center gap-3 group"
-            >
-              <div
-                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${minRating === r && r > 0 ? "bg-primary border-primary" : "border-border group-hover:border-muted-foreground"}`}
-              >
-                {minRating === r && r > 0 && (
-                  <Check size={10} className="text-primary-foreground" />
-                )}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <StarRating rating={r || 1} size={11} />
-                <span className="text-xs text-muted-foreground">
-                  {r > 0 ? `${r}+ estrellas` : "Todos"}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Material */}
-      <FilterSection title="Material" defaultOpen={false}>
-        <div className="flex flex-col gap-2">
-          {MATERIALS.map((mat) => (
-            <button
-              key={mat}
-              onClick={() => toggleMaterial(mat)}
-              className="flex items-center gap-2.5 text-sm group"
-            >
-              <div
-                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${selectedMaterials.includes(mat) ? "bg-primary border-primary" : "border-border group-hover:border-muted-foreground"}`}
-              >
-                {selectedMaterials.includes(mat) && (
-                  <Check size={10} className="text-primary-foreground" />
-                )}
-              </div>
-              <span
-                className={`text-sm transition-colors ${selectedMaterials.includes(mat) ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
-              >
-                {mat}
-              </span>
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Toggles */}
-      <div className="flex flex-col gap-3">
-        {[
-          { label: "En oferta", value: onSaleOnly, set: setOnSaleOnly },
-          { label: "Novedades", value: newOnly, set: setNewOnly },
-        ].map(({ label, value, set }) => (
-          <button
-            key={label}
-            onClick={() => set(!value)}
-            className="flex items-center justify-between group"
-          >
-            <span
-              className={`text-sm transition-colors ${value ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
-            >
-              {label}
-            </span>
-            <div
-              className={`w-9 h-5 relative transition-colors ${value ? "bg-primary" : "bg-muted"}`}
-            >
-              <div
-                className={`absolute top-0.5 w-4 h-4 bg-foreground transition-transform ${value ? "translate-x-4" : "translate-x-0.5"}`}
-              />
-            </div>
-          </button>
-        ))}
-      </div>
-    </aside>
-  );
-
-  // ── PRODUCT CARD ──────────────────────────────────────────────────────────
-
-  const ProductCard = ({ product }: { product: (typeof ALL_PRODUCTS)[0] }) => {
-    if (viewMode === "list") {
-      return (
-        <div className="group bg-card border border-border flex gap-5 p-4 hover:border-border/60 transition-colors">
-          <div className="relative w-28 h-28 shrink-0 overflow-hidden bg-muted">
-            <img
-              src={`https://images.unsplash.com/${product.img}?w=300&h=300&fit=crop&auto=format`}
-              alt={product.name}
-              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-            />
-            {product.badge && (
-              <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[9px] tracking-widest uppercase px-1.5 py-0.5">
-                {product.badge}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-col flex-1 min-w-0 py-1">
-            <p className="text-xs text-primary tracking-widest uppercase mb-1">
-              {product.category}
-            </p>
-            <h3
-              className="text-lg text-foreground mb-1 leading-tight"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
-            >
-              {product.name}
-            </h3>
-            <div className="flex items-center gap-2 mb-2">
-              <StarRating rating={product.rating} />
-              <span className="text-xs text-muted-foreground">
-                ({product.reviews})
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground mb-auto">
-              {product.material}
-            </p>
-            <div className="flex items-center justify-between mt-3">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-medium text-foreground">
-                  €{product.price.toFixed(2)}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-sm text-muted-foreground line-through">
-                    €{product.originalPrice.toFixed(2)}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className="w-8 h-8 border border-border flex items-center justify-center hover:border-primary/50 transition-colors"
-                  aria-label="Favorito"
-                >
-                  <Heart
-                    size={13}
-                    fill={wishlist.includes(product.id) ? "#c4355a" : "none"}
-                    stroke={
-                      wishlist.includes(product.id) ? "#c4355a" : "#f0ebe3"
-                    }
-                  />
-                </button>
-                <button className="border border-border text-foreground text-xs tracking-widest uppercase px-4 py-2 hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-200">
-                  Añadir
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="group bg-card border border-border flex flex-col">
-        <div className="relative aspect-square overflow-hidden bg-muted">
-          <img
-            src={`https://images.unsplash.com/${product.img}?w=500&h=500&fit=crop&auto=format`}
-            alt={product.name}
-            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-          />
-          {product.badge && (
-            <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-[9px] tracking-widest uppercase px-2 py-1">
-              {product.badge}
-            </span>
-          )}
-          {product.onSale && !product.badge && (
-            <span className="absolute top-3 left-3 bg-card/90 text-foreground text-[9px] tracking-widest uppercase px-2 py-1 border border-border">
-              Oferta
-            </span>
-          )}
-          <button
-            onClick={() => toggleWishlist(product.id)}
-            className="absolute top-3 right-3 w-8 h-8 bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-card"
-            aria-label="Favorito"
-          >
-            <Heart
-              size={13}
-              fill={wishlist.includes(product.id) ? "#c4355a" : "none"}
-              stroke={wishlist.includes(product.id) ? "#c4355a" : "#f0ebe3"}
-            />
-          </button>
-        </div>
-        <div className="p-4 flex flex-col flex-1">
-          <p className="text-[10px] text-primary tracking-widest uppercase mb-1">
-            {product.category}
-          </p>
-          <h3
-            className="text-base text-foreground mb-1.5 leading-tight"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
-          >
-            {product.name}
-          </h3>
-          <div className="flex items-center gap-1.5 mb-3">
-            <StarRating rating={product.rating} />
-            <span className="text-xs text-muted-foreground">
-              ({product.reviews})
-            </span>
-          </div>
-          <div className="flex items-center gap-2 mt-auto mb-3">
-            <span className="text-base font-medium text-foreground">
-              €{product.price.toFixed(2)}
-            </span>
-            {product.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                €{product.originalPrice.toFixed(2)}
-              </span>
-            )}
-          </div>
-          <button className="w-full border border-border text-foreground text-[10px] tracking-widest uppercase py-2.5 hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-200">
-            Añadir al carrito
-          </button>
-        </div>
-      </div>
-    );
-  };
+  const productsCountByCategory = useMemo(() => {
+    const counts: Record<string, number> = {};
+    ALL_PRODUCTS.forEach((p) => {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+    return counts;
+  }, []);
 
   // ── RENDER ─────────────────────────────────────────────────────────────────
 
@@ -945,7 +537,27 @@ export default function Catalog() {
           <div className="flex gap-10">
             {/* Sidebar — desktop */}
             <div className="hidden md:block">
-              <Sidebar />
+              <CatalogSidebar
+                search={search}
+                setSearch={setSearch}
+                selectedCategories={selectedCategories}
+                toggleCategory={toggleCategory}
+                selectedMaterials={selectedMaterials}
+                toggleMaterial={toggleMaterial}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
+                minRating={minRating}
+                setMinRating={setMinRating}
+                onSaleOnly={onSaleOnly}
+                setOnSaleOnly={setOnSaleOnly}
+                newOnly={newOnly}
+                setNewOnly={setNewOnly}
+                clearAll={clearAll}
+                activeFiltersCount={activeFiltersCount}
+                categories={CATEGORIES}
+                materials={MATERIALS}
+                productsCountByCategory={productsCountByCategory}
+              />
             </div>
 
             {/* Main */}
@@ -1031,7 +643,27 @@ export default function Catalog() {
                         <X size={18} />
                       </button>
                     </div>
-                    <Sidebar />
+                    <CatalogSidebar
+                      search={search}
+                      setSearch={setSearch}
+                      selectedCategories={selectedCategories}
+                      toggleCategory={toggleCategory}
+                      selectedMaterials={selectedMaterials}
+                      toggleMaterial={toggleMaterial}
+                      priceRange={priceRange}
+                      setPriceRange={setPriceRange}
+                      minRating={minRating}
+                      setMinRating={setMinRating}
+                      onSaleOnly={onSaleOnly}
+                      setOnSaleOnly={setOnSaleOnly}
+                      newOnly={newOnly}
+                      setNewOnly={setNewOnly}
+                      clearAll={clearAll}
+                      activeFiltersCount={activeFiltersCount}
+                      categories={CATEGORIES}
+                      materials={MATERIALS}
+                      productsCountByCategory={productsCountByCategory}
+                    />
                     <button
                       onClick={() => setSidebarOpen(false)}
                       className="w-full bg-primary text-primary-foreground text-xs tracking-widest uppercase py-3 mt-4"
@@ -1061,13 +693,25 @@ export default function Catalog() {
               ) : viewMode === "grid" ? (
                 <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {filtered.map((p) => (
-                    <ProductCard key={p.id} product={p} />
+                    <ProductCard
+                      key={p.id}
+                      product={p}
+                      view={viewMode}
+                      isWishlisted={wishlist.includes(p.id)}
+                      onToggleWishlist={toggleWishlist}
+                    />
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
                   {filtered.map((p) => (
-                    <ProductCard key={p.id} product={p} />
+                    <ProductCard
+                      key={p.id}
+                      product={p}
+                      view={viewMode}
+                      isWishlisted={wishlist.includes(p.id)}
+                      onToggleWishlist={toggleWishlist}
+                    />
                   ))}
                 </div>
               )}

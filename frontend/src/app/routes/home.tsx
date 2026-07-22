@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import {
-  Star,
-  ChevronRight,
-  Heart,
-  Package,
-  Shield,
-  Truck,
-} from "lucide-react";
+import { ChevronRight, Package, Shield, Truck, Star } from "lucide-react";
 import ContentLayout from "@/components/layouts/content-layout";
+import { StarRating } from "@/components/ui/star-rating";
+import { SectionHeader } from "@/components/ui/section-header";
+import { ProductCard } from "@/components/products/product-card";
+import { Button } from "@/components/ui/button";
 
 const CATEGORIES = [
   {
@@ -114,22 +111,6 @@ const TESTIMONIALS = [
   },
 ];
 
-function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          size={size}
-          fill={s <= rating ? "#c4355a" : "none"}
-          stroke={s <= rating ? "#c4355a" : "#8a7d80"}
-          strokeWidth={1.5}
-        />
-      ))}
-    </div>
-  );
-}
-
 export default function HomePage() {
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [email, setEmail] = useState("");
@@ -217,17 +198,7 @@ export default function HomePage() {
         className="py-24 px-6 md:px-12 max-w-7xl mx-auto"
       >
         <div className="flex items-end justify-between mb-12">
-          <div>
-            <p className="text-xs tracking-[0.2em] uppercase text-primary mb-3">
-              Explorar
-            </p>
-            <h2
-              className="text-4xl md:text-5xl"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
-            >
-              Por categoría
-            </h2>
-          </div>
+          <SectionHeader subtitle="Explorar" title="Por categoría" />
           <Link
             to="/catalogo"
             className="hidden md:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -266,17 +237,7 @@ export default function HomePage() {
       <section className="py-24 bg-secondary/30">
         <div className="px-6 md:px-12 max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
-            <div>
-              <p className="text-xs tracking-[0.2em] uppercase text-primary mb-3">
-                Selección
-              </p>
-              <h2
-                className="text-4xl md:text-5xl"
-                style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
-              >
-                Más deseados
-              </h2>
-            </div>
+            <SectionHeader subtitle="Selección" title="Más deseados" />
             <Link
               to="/catalogo"
               className="hidden md:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -286,66 +247,12 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PRODUCTS.map((product) => (
-              <div
+              <ProductCard
                 key={product.id}
-                className="group bg-card border border-border flex flex-col"
-              >
-                <div className="relative aspect-square overflow-hidden bg-muted">
-                  <img
-                    src={`https://images.unsplash.com/${product.img}?w=600&h=600&fit=crop&auto=format`}
-                    alt={product.name}
-                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                  />
-                  {product.badge && (
-                    <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-[10px] tracking-widest uppercase px-2.5 py-1">
-                      {product.badge}
-                    </span>
-                  )}
-                  <button
-                    onClick={() => toggleWishlist(product.id)}
-                    className="absolute top-3 right-3 w-8 h-8 bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    aria-label="Añadir a favoritos"
-                  >
-                    <Heart
-                      size={14}
-                      fill={wishlist.includes(product.id) ? "#c4355a" : "none"}
-                      stroke={
-                        wishlist.includes(product.id) ? "#c4355a" : "#f0ebe3"
-                      }
-                    />
-                  </button>
-                </div>
-                <div className="p-5 flex flex-col flex-1">
-                  <p className="text-xs text-primary tracking-widest uppercase mb-1">
-                    {product.category}
-                  </p>
-                  <h3
-                    className="text-lg text-foreground mb-2 leading-tight"
-                    style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
-                  >
-                    {product.name}
-                  </h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <StarRating rating={product.rating} />
-                    <span className="text-xs text-muted-foreground">
-                      ({product.reviews})
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-auto mb-4">
-                    <span className="text-lg font-medium text-foreground">
-                      €{product.price.toFixed(2)}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        €{product.originalPrice.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                  <button className="w-full border border-border text-foreground text-xs tracking-widest uppercase py-3 hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-200">
-                    Añadir al carrito
-                  </button>
-                </div>
-              </div>
+                product={product}
+                isWishlisted={wishlist.includes(product.id)}
+                onToggleWishlist={toggleWishlist}
+              />
             ))}
           </div>
         </div>
@@ -394,15 +301,11 @@ export default function HomePage() {
       {/* TESTIMONIOS */}
       <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="mb-12 text-center">
-          <p className="text-xs tracking-[0.2em] uppercase text-primary mb-3">
-            Clientes
-          </p>
-          <h2
-            className="text-4xl md:text-5xl"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
-          >
-            Lo que dicen de nosotros
-          </h2>
+          <SectionHeader
+            subtitle="Clientes"
+            title="Lo que dicen de nosotros"
+            center
+          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TESTIMONIALS.map((t) => (
@@ -438,15 +341,11 @@ export default function HomePage() {
       {/* NEWSLETTER */}
       <section className="bg-secondary/40 border-t border-b border-border py-24 px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-xs tracking-[0.2em] uppercase text-primary mb-4">
-            Newsletter
-          </p>
-          <h2
-            className="text-4xl md:text-5xl mb-5"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
-          >
-            Únete a nuestra comunidad
-          </h2>
+          <SectionHeader
+            subtitle="Newsletter"
+            title="Únete a nuestra comunidad"
+            center
+          />
           <p className="text-muted-foreground text-base leading-relaxed mb-10">
             Sé la primera persona en conocer nuevos productos, colecciones
             exclusivas y ofertas privadas. Sin spam.
@@ -469,14 +368,11 @@ export default function HomePage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
                 required
-                className="flex-1 bg-card border border-border text-foreground placeholder:text-muted-foreground px-5 py-4 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                className="flex-1 bg-card border border-border text-foreground placeholder:text-muted-foreground h-10 px-6 text-sm focus:outline-none focus:border-primary/50 transition-colors"
               />
-              <button
-                type="submit"
-                className="bg-primary text-primary-foreground px-7 py-4 text-xs tracking-widest uppercase hover:bg-primary/90 transition-colors whitespace-nowrap"
-              >
+              <Button type="submit" variant={"default"} size={"lg"}>
                 Suscribirme
-              </button>
+              </Button>
             </form>
           )}
           <p className="text-muted-foreground text-xs mt-5">
