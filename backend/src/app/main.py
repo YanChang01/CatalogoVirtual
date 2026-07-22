@@ -12,7 +12,7 @@ app = FastAPI(
 )
 
 # Routers
-#app.include_router(users.router)
+app.include_router(users.router)
 app.include_router(categories.router)
 #app.include_router(products.router)
 
