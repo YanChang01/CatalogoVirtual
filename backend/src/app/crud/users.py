@@ -71,16 +71,16 @@ async def update_user(email: EmailStr, user: UserUpdate, session: AsyncSession) 
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El email {user.email} ya está en uso")
 
     # Actualizar solo los campos enviados en la instancia
-        update_data = user.model_dump(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(db_user, key, value)
+    update_data = user.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_user, key, value)
         
-        #Actualizar la base de datos
-        session.add(db_user)
-        await session.commit()
-        await session.refresh(db_user)
+    #Actualizar la base de datos
+    session.add(db_user)
+    await session.commit()
+    await session.refresh(db_user)
         
-        return db_user
+    return db_user
     
 async def delete_user(email: EmailStr, session: AsyncSession) -> User:
     #Validar que el usuario a actualizar existe
@@ -93,8 +93,8 @@ async def delete_user(email: EmailStr, session: AsyncSession) -> User:
     #Actualizar el campo is_deleted = True para soft delete
     db_user.is_deleted = True
     session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
+    await session.commit()
+    await session.refresh(db_user)
     
     return db_user
 
