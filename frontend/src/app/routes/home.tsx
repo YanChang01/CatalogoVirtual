@@ -5,8 +5,6 @@ import ContentLayout from "@/components/layouts/content-layout";
 import { StarRating } from "@/components/ui/star-rating";
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/components/products/product-card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 const CATEGORIES = [
   {
@@ -130,8 +128,6 @@ const TESTIMONIALS = [
 
 export default function HomePage() {
   const [wishlist, setWishlist] = useState<number[]>([]);
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
 
   const toggleWishlist = (id: number) =>
     setWishlist((prev) =>
@@ -352,50 +348,6 @@ export default function HomePage() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* NEWSLETTER */}
-      <section className="bg-secondary/40 border-t border-b border-border py-24 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <SectionHeader
-            subtitle="Newsletter"
-            title="Únete a nuestra comunidad"
-            center
-          />
-          <p className="text-muted-foreground text-base leading-relaxed mb-10">
-            Sé la primera persona en conocer nuevos productos, colecciones
-            exclusivas y ofertas privadas. Sin spam.
-          </p>
-          {subscribed ? (
-            <div className="border border-primary/30 px-8 py-5 text-primary text-sm tracking-wide">
-              ¡Gracias! Bienvenido/a a la comunidad de SexShop.
-            </div>
-          ) : (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (email.trim()) setSubscribed(true);
-              }}
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-            >
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                required
-                size="lg"
-              />
-              <Button type="submit" variant="default" size="lg">
-                Suscribirme
-              </Button>
-            </form>
-          )}
-          <p className="text-muted-foreground text-xs mt-5">
-            Al suscribirte aceptas nuestra política de privacidad. Cancela
-            cuando quieras.
-          </p>
         </div>
       </section>
     </ContentLayout>
