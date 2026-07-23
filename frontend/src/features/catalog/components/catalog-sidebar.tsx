@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Search, X, Check, ChevronUp, ChevronDown } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
+import { StarRating } from "@/components/ui/star-rating";
 
 interface CatalogSidebarProps {
   search: string;
@@ -59,8 +61,6 @@ function FilterSection({
     </div>
   );
 }
-
-import { StarRating } from "@/components/ui/star-rating";
 
 export function CatalogSidebar({
   search,
@@ -135,14 +135,22 @@ export function CatalogSidebar({
             >
               <div className="flex items-center gap-2.5">
                 <div
-                  className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${selectedCategories.includes(cat) ? "bg-primary border-primary" : "border-border group-hover:border-muted-foreground"}`}
+                  className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${
+                    selectedCategories.includes(cat)
+                      ? "bg-primary border-primary"
+                      : "border-border group-hover:border-muted-foreground"
+                  }`}
                 >
                   {selectedCategories.includes(cat) && (
                     <Check size={10} className="text-primary-foreground" />
                   )}
                 </div>
                 <span
-                  className={`transition-colors ${selectedCategories.includes(cat) ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
+                  className={`transition-colors ${
+                    selectedCategories.includes(cat)
+                      ? "text-foreground"
+                      : "text-muted-foreground group-hover:text-foreground"
+                  }`}
                 >
                   {cat}
                 </span>
@@ -237,7 +245,11 @@ export function CatalogSidebar({
               className="flex items-center gap-3 group"
             >
               <div
-                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${minRating === r && r > 0 ? "bg-primary border-primary" : "border-border group-hover:border-muted-foreground"}`}
+                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${
+                  minRating === r && r > 0
+                    ? "bg-primary border-primary"
+                    : "border-border group-hover:border-muted-foreground"
+                }`}
               >
                 {minRating === r && r > 0 && (
                   <Check size={10} className="text-primary-foreground" />
@@ -264,14 +276,22 @@ export function CatalogSidebar({
               className="flex items-center gap-2.5 text-sm group"
             >
               <div
-                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${selectedMaterials.includes(mat) ? "bg-primary border-primary" : "border-border group-hover:border-muted-foreground"}`}
+                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${
+                  selectedMaterials.includes(mat)
+                    ? "bg-primary border-primary"
+                    : "border-border group-hover:border-muted-foreground"
+                }`}
               >
                 {selectedMaterials.includes(mat) && (
                   <Check size={10} className="text-primary-foreground" />
                 )}
               </div>
               <span
-                className={`text-sm transition-colors ${selectedMaterials.includes(mat) ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
+                className={`text-sm transition-colors ${
+                  selectedMaterials.includes(mat)
+                    ? "text-foreground"
+                    : "text-muted-foreground group-hover:text-foreground"
+                }`}
               >
                 {mat}
               </span>
@@ -292,15 +312,21 @@ export function CatalogSidebar({
             className="flex items-center justify-between group"
           >
             <span
-              className={`text-sm transition-colors ${value ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
+              className={`text-sm transition-colors ${
+                value ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+              }`}
             >
               {label}
             </span>
             <div
-              className={`w-9 h-5 relative transition-colors ${value ? "bg-primary" : "bg-muted"}`}
+              className={`w-9 h-5 relative transition-colors ${
+                value ? "bg-primary" : "bg-muted"
+              }`}
             >
               <div
-                className={`absolute top-0.5 w-4 h-4 bg-foreground transition-transform ${value ? "translate-x-4" : "translate-x-0.5"}`}
+                className={`absolute top-0.5 w-4 h-4 bg-foreground transition-transform ${
+                  value ? "translate-x-4" : "translate-x-0.5"
+                }`}
               />
             </div>
           </button>
