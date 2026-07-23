@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router";
-import {
-  ChevronLeft,
-  Heart,
-  Share2,
-  Truck,
-  Shield,
-  Package,
-  X,
-} from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
-import { Button } from "@/components/ui/button";
 
 import { ALL_PRODUCTS } from "@/data/products";
 import ContentLayout from "@/components/layouts/content-layout";
@@ -19,8 +9,6 @@ export default function ProductDetail() {
   const { productId } = useParams();
   const id = Number(productId);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-  const [wishlisted, setWishlisted] = useState(false);
 
   const product = ALL_PRODUCTS.find((p) => p.id === id);
 
@@ -36,10 +24,10 @@ export default function ProductDetail() {
   return (
     <ContentLayout>
       <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-12 py-10">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Gallery */}
-            <div className="space-y-4">
+            <div className="space-y-4 min-w-0">
               <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
                 <img
                   src={`https://images.unsplash.com/${images[selectedImage]}?w=800&h=800&fit=crop&auto=format`}
@@ -62,7 +50,7 @@ export default function ProductDetail() {
                   <button
                     key={img}
                     onClick={() => setSelectedImage(i)}
-                    className={`relative shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-colors ${
+                    className={`relative shrink-0 w-20 h-20 min-w-[80px] rounded-md overflow-hidden border-2 transition-colors ${
                       selectedImage === i
                         ? "border-primary"
                         : "border-transparent hover:border-muted-foreground/50"
@@ -81,7 +69,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Product Info */}
-            <div className="space-y-6">
+            <div className="space-y-6 min-w-0">
               <div>
                 <p className="text-xs text-primary tracking-widest uppercase mb-2">
                   {product.category} / {product.subcategory}
@@ -124,102 +112,6 @@ export default function ProductDetail() {
               <p className="text-muted-foreground text-sm leading-relaxed">
                 {product.material}
               </p>
-
-              <div className="border-t border-b border-border py-6 space-y-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground w-28 shrink-0">
-                    Cantidad
-                  </span>
-                  <div className="flex items-center border border-border rounded-md">
-                    <button
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
-                      aria-label="Disminuir cantidad"
-                    >
-                      <X size={16} className="text-muted-foreground" />
-                    </button>
-                    <span className="w-12 text-center text-foreground font-medium">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => setQuantity((q) => q + 1)}
-                      className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
-                      aria-label="Aumentar cantidad"
-                    >
-                      <ChevronLeft
-                        size={16}
-                        className="text-muted-foreground rotate-180"
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground w-28 shrink-0">
-                    Añadir
-                  </span>
-                  <div className="flex gap-2">
-                    <Button
-                      size="lg"
-                      className="flex-1 py-3 text-sm tracking-widest uppercase"
-                      onClick={() => {}}
-                    >
-                      Añadir al carrito
-                    </Button>
-                    <button
-                      onClick={() => setWishlisted(!wishlisted)}
-                      className="w-12 h-12 border border-border flex items-center justify-center hover:border-primary/50 hover:bg-muted transition-colors rounded-md"
-                      aria-label={
-                        wishlisted
-                          ? "Quitar de favoritos"
-                          : "Añadir a favoritos"
-                      }
-                    >
-                      <Heart
-                        size={18}
-                        fill={wishlisted ? "#c4355a" : "none"}
-                        stroke={wishlisted ? "#c4355a" : "#8a7d80"}
-                      />
-                    </button>
-                    <button
-                      className="w-12 h-12 border border-border flex items-center justify-center hover:border-primary/50 hover:bg-muted transition-colors rounded-md"
-                      aria-label="Compartir"
-                    >
-                      <Share2 size={18} className="text-muted-foreground" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 text-center p-4 bg-muted/50 rounded-lg">
-                <div className="flex flex-col items-center gap-1.5">
-                  <Truck size={20} className="text-primary" />
-                  <span className="text-xs text-foreground font-medium">
-                    Envío 48h
-                  </span>
-                  <span className="text-[10px] text-muted-foreground">
-                    Península
-                  </span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5 border-x border-border">
-                  <Shield size={20} className="text-primary" />
-                  <span className="text-xs text-foreground font-medium">
-                    Pago seguro
-                  </span>
-                  <span className="text-[10px] text-muted-foreground">
-                    SSL 256-bit
-                  </span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <Package size={20} className="text-primary" />
-                  <span className="text-xs text-foreground font-medium">
-                    Discreto
-                  </span>
-                  <span className="text-[10px] text-muted-foreground">
-                    Sin marcas
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
 
