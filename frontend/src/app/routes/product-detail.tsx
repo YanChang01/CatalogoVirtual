@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router";
+import { MessageCircle } from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
+import { WHATSAPP_NUMBER } from "@/config/constants";
 
 import { ALL_PRODUCTS } from "@/data/products";
 import ContentLayout from "@/components/layouts/content-layout";
@@ -112,6 +114,20 @@ export default function ProductDetail() {
               <p className="text-muted-foreground text-sm leading-relaxed">
                 {product.material}
               </p>
+
+              <div className="pt-6">
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                    `Hola, me interesa el producto: ${product.name}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/80"
+                >
+                  <MessageCircle size={16} className="mr-2" />
+                  Contactar por WhatsApp
+                </a>
+              </div>
             </div>
           </div>
 

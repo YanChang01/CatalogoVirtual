@@ -1,8 +1,8 @@
-import { Heart } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { Link } from "react-router";
 import { StarRating } from "@/components/ui/star-rating";
-import { Button } from "@/components/ui/button";
 import { routes } from "@/config/routes";
+import { WHATSAPP_NUMBER } from "@/config/constants";
 import type { Product } from "@/types/product";
 
 interface ProductCardProps {
@@ -10,7 +10,6 @@ interface ProductCardProps {
   view?: "grid" | "list";
   onToggleWishlist: (id: number) => void;
   isWishlisted: boolean;
-  onAddToCart?: (product: Product) => void;
 }
 
 export function ProductCard({
@@ -18,7 +17,6 @@ export function ProductCard({
   view = "grid",
   onToggleWishlist,
   isWishlisted,
-  onAddToCart,
 }: ProductCardProps) {
   if (view === "list") {
     return (
@@ -81,14 +79,17 @@ export function ProductCard({
                   stroke={isWishlisted ? "#c4355a" : "#f0ebe3"}
                 />
               </button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs tracking-widest uppercase"
-                onClick={() => onAddToCart?.(product)}
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                  `Hola, me interesa el producto: ${product.name}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/80 text-xs tracking-widest uppercase"
               >
-                Añadir
-              </Button>
+                <MessageCircle size={13} className="mr-1" />
+                Contactar
+              </a>
             </div>
           </div>
         </div>
@@ -146,23 +147,27 @@ export function ProductCard({
             ({product.reviews})
           </span>
         </div>
-        <div className="flex items-center gap-2 mt-auto mb-3">
-          <span className="text-base font-medium text-foreground">
-            €{product.price.toFixed(2)}
-          </span>
-          {product.originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              €{product.originalPrice.toFixed(2)}
+<div className="flex items-center gap-2 mt-auto mb-3">
+            <span className="text-base font-medium text-foreground">
+              €{product.price.toFixed(2)}
             </span>
-          )}
-        </div>
-        <Button
-          variant="outline"
-          className="w-full text-[10px] tracking-widest uppercase py-2.5"
-          onClick={() => onAddToCart?.(product)}
-        >
-          Añadir al carrito
-        </Button>
+            {product.originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                €{product.originalPrice.toFixed(2)}
+              </span>
+            )}
+          </div>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+              `Hola, me interesa el producto: ${product.name}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full text-[10px] tracking-widest uppercase py-2.5 bg-primary text-primary-foreground hover:bg-primary/80"
+          >
+            <MessageCircle size={12} className="mr-1" />
+            Contactar
+          </a>
       </div>
     </div>
   );
