@@ -1,6 +1,8 @@
 import { Heart } from "lucide-react";
+import { Link } from "react-router";
 import { StarRating } from "@/components/ui/star-rating";
 import { Button } from "@/components/ui/button";
+import { routes } from "@/config/routes";
 
 export interface Product {
   id: number;
@@ -37,11 +39,13 @@ export function ProductCard({
     return (
       <div className="group bg-card border border-border flex gap-5 p-4 hover:border-border/60 transition-colors">
         <div className="relative w-28 h-28 shrink-0 overflow-hidden bg-muted">
-          <img
-            src={`https://images.unsplash.com/${product.img}?w=300&h=300&fit=crop&auto=format`}
-            alt={product.name}
-            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-          />
+          <Link to={routes.product.path(product.id)} className="block w-full h-full">
+            <img
+              src={`https://images.unsplash.com/${product.img}?w=300&h=300&fit=crop&auto=format`}
+              alt={product.name}
+              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+            />
+          </Link>
           {product.badge && (
             <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[9px] tracking-widest uppercase px-1.5 py-0.5">
               {product.badge}
@@ -52,12 +56,14 @@ export function ProductCard({
           <p className="text-xs text-primary tracking-widest uppercase mb-1">
             {product.category}
           </p>
-          <h3
-            className="text-lg text-foreground mb-1 leading-tight"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
-          >
-            {product.name}
-          </h3>
+          <Link to={routes.product.path(product.id)} className="hover:text-primary transition-colors">
+            <h3
+              className="text-lg text-foreground mb-1 leading-tight"
+              style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
+            >
+              {product.name}
+            </h3>
+          </Link>
           <div className="flex items-center gap-2 mb-2">
             <StarRating rating={product.rating} size={12} />
             <span className="text-xs text-muted-foreground">
@@ -108,11 +114,13 @@ export function ProductCard({
   return (
     <div className="group bg-card border border-border flex flex-col">
       <div className="relative aspect-square overflow-hidden bg-muted">
-        <img
-          src={`https://images.unsplash.com/${product.img}?w=500&h=500&fit=crop&auto=format`}
-          alt={product.name}
-          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-        />
+        <Link to={routes.product.path(product.id)} className="block w-full h-full">
+          <img
+            src={`https://images.unsplash.com/${product.img}?w=500&h=500&fit=crop&auto=format`}
+            alt={product.name}
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+          />
+        </Link>
         {product.badge && (
           <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-[9px] tracking-widest uppercase px-2 py-1">
             {product.badge}
@@ -139,12 +147,14 @@ export function ProductCard({
         <p className="text-[10px] text-primary tracking-widest uppercase mb-1">
           {product.category}
         </p>
-        <h3
-          className="text-base text-foreground mb-1.5 leading-tight"
-          style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
-        >
-          {product.name}
-        </h3>
+        <Link to={routes.product.path(product.id)} className="hover:text-primary transition-colors">
+          <h3
+            className="text-base text-foreground mb-1.5 leading-tight"
+            style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
+          >
+            {product.name}
+          </h3>
+        </Link>
         <div className="flex items-center gap-1.5 mb-3">
           <StarRating rating={product.rating} size={12} />
           <span className="text-xs text-muted-foreground">

@@ -4,6 +4,7 @@ import NotFoundPage from "@/app/routes/not-found";
 import { routes } from "@/config/routes";
 import HomePage from "@/app/routes/home";
 import Catalog from "@/app/routes/catalog";
+import ProductDetail from "@/app/routes/product-detail";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path={routes.home.path} element={<HomePage />} />
         <Route path={routes.products.path} element={<Catalog />} />
+        <Route path={routes.product.path(":productId")} element={<ProductDetail />} />
         {/* Ruta comodín ¡SIEMPRE AL FINAL! */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
