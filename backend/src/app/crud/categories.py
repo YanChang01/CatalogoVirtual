@@ -47,9 +47,8 @@ async def read_categories(session: AsyncSession) -> List[Category]:
 
 #Update
 async def update_category(name: str, category: CategoryUpdate, session: AsyncSession) -> Category:
-    #Capitalizar names
+    #Capitalizar name
     name = name.capitalize()
-    category.name = category.name.capitalize()
     
     #Buscar la categoría existente no eliminada.
     query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
@@ -60,6 +59,9 @@ async def update_category(name: str, category: CategoryUpdate, session: AsyncSes
 
     #Validar que el nuevo nombre de la categoría no esté en uso ya
     if category.name is not None:
+        #Capitalizar name
+        category.name = category.name.capitalize()
+        
         query = await session.exec(select(Category).where(Category.name == category.name))
         existing = query.first()
         
