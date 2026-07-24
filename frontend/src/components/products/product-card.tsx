@@ -22,7 +22,10 @@ export function ProductCard({
     return (
       <div className="group bg-card border border-border flex gap-5 p-4 hover:border-border/60 transition-colors">
         <div className="relative w-28 h-28 shrink-0 overflow-hidden bg-muted">
-          <Link to={routes.product.path(product.id)} className="block w-full h-full">
+          <Link
+            to={routes.product.path(product.id)}
+            className="block w-full h-full"
+          >
             <img
               src={`https://images.unsplash.com/${product.img}?w=300&h=300&fit=crop&auto=format`}
               alt={product.name}
@@ -39,7 +42,10 @@ export function ProductCard({
           <p className="text-xs text-primary tracking-widest uppercase mb-1">
             {product.category}
           </p>
-          <Link to={routes.product.path(product.id)} className="hover:text-primary transition-colors">
+          <Link
+            to={routes.product.path(product.id)}
+            className="hover:text-primary transition-colors"
+          >
             <h3
               className="text-lg text-foreground mb-1 leading-tight"
               style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
@@ -59,11 +65,11 @@ export function ProductCard({
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
               <span className="text-base font-medium text-foreground">
-                €{product.price.toFixed(2)}
+                ${product.price.toFixed(2)}
               </span>
               {product.originalPrice && (
                 <span className="text-sm text-muted-foreground line-through">
-                  €{product.originalPrice.toFixed(2)}
+                  ${product.originalPrice.toFixed(2)}
                 </span>
               )}
             </div>
@@ -81,7 +87,7 @@ export function ProductCard({
               </button>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                  `Hola, me interesa el producto: ${product.name}`
+                  `Hola, me interesa el producto: ${product.name}`,
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -100,7 +106,10 @@ export function ProductCard({
   return (
     <div className="group bg-card border border-border flex flex-col">
       <div className="relative aspect-square overflow-hidden bg-muted">
-        <Link to={routes.product.path(product.id)} className="block w-full h-full">
+        <Link
+          to={routes.product.path(product.id)}
+          className="block w-full h-full"
+        >
           <img
             src={`https://images.unsplash.com/${product.img}?w=500&h=500&fit=crop&auto=format`}
             alt={product.name}
@@ -133,7 +142,10 @@ export function ProductCard({
         <p className="text-[10px] text-primary tracking-widest uppercase mb-1">
           {product.category}
         </p>
-        <Link to={routes.product.path(product.id)} className="hover:text-primary transition-colors">
+        <Link
+          to={routes.product.path(product.id)}
+          className="hover:text-primary transition-colors"
+        >
           <h3
             className="text-base text-foreground mb-1.5 leading-tight"
             style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
@@ -147,27 +159,27 @@ export function ProductCard({
             ({product.reviews})
           </span>
         </div>
-<div className="flex items-center gap-2 mt-auto mb-3">
-            <span className="text-base font-medium text-foreground">
-              €{product.price.toFixed(2)}
+        <div className="flex items-center gap-2 mt-auto mb-3">
+          <span className="text-base font-medium text-foreground">
+            ${product.price.toFixed(2)}
+          </span>
+          {product.originalPrice && (
+            <span className="text-sm text-muted-foreground line-through">
+              ${product.originalPrice.toFixed(2)}
             </span>
-            {product.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                €{product.originalPrice.toFixed(2)}
-              </span>
-            )}
-          </div>
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-              `Hola, me interesa el producto: ${product.name}`
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full text-[10px] tracking-widest uppercase py-2.5 bg-primary text-primary-foreground hover:bg-primary/80"
-          >
-            <MessageCircle size={12} className="mr-1" />
-            Contactar
-          </a>
+          )}
+        </div>
+        <a
+          href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+            `Hola, me interesa el producto: ${product.name}`,
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full text-[10px] tracking-widest uppercase py-2.5 bg-primary text-primary-foreground hover:bg-primary/80"
+        >
+          <MessageCircle size={12} className="mr-1" />
+          Contactar
+        </a>
       </div>
     </div>
   );

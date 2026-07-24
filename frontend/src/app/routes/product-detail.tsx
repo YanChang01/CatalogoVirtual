@@ -93,11 +93,11 @@ export default function ProductDetail() {
 
               <div className="flex items-baseline gap-4">
                 <span className="text-3xl font-medium text-foreground">
-                  €{product.price.toFixed(2)}
+                  ${product.price.toFixed(2)}
                 </span>
                 {product.originalPrice && (
                   <span className="text-xl text-muted-foreground line-through">
-                    €{product.originalPrice.toFixed(2)}
+                    ${product.originalPrice.toFixed(2)}
                   </span>
                 )}
                 {product.onSale && product.originalPrice && (
@@ -118,7 +118,7 @@ export default function ProductDetail() {
               <div className="pt-6">
                 <a
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                    `Hola, me interesa el producto: ${product.name}`
+                    `Hola, me interesa el producto: ${product.name}`,
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -158,7 +158,7 @@ export default function ProductDetail() {
                   <li>Subcategoría: {product.subcategory ?? "—"}</li>
                   {product.originalPrice && (
                     <li>
-                      Precio original: €{product.originalPrice.toFixed(2)}
+                      Precio original: ${product.originalPrice.toFixed(2)}
                     </li>
                   )}
                   {product.onSale && <li>En oferta: Sí</li>}

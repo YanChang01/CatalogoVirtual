@@ -167,8 +167,8 @@ export function CatalogSidebar({
       <FilterSection title="Precio">
         <div className="space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">€{priceRange[0]}</span>
-            <span className="text-muted-foreground">€{priceRange[1]}</span>
+            <span className="text-muted-foreground">${priceRange[0]}</span>
+            <span className="text-muted-foreground">${priceRange[1]}</span>
           </div>
           <div className="relative h-1 bg-muted">
             <div
@@ -313,7 +313,9 @@ export function CatalogSidebar({
           >
             <span
               className={`text-sm transition-colors ${
-                value ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+                value
+                  ? "text-foreground"
+                  : "text-muted-foreground group-hover:text-foreground"
               }`}
             >
               {label}
