@@ -60,8 +60,8 @@ async def update_category(name: str, category: CategoryUpdate, session: AsyncSes
 
     #Validar que el nuevo nombre de la categoría no esté en uso ya
     if category.name is not None:
-        query2 = await session.exec(select(Category).where(Category.name == category.name))
-        existing = query2.first()
+        query = await session.exec(select(Category).where(Category.name == category.name))
+        existing = query.first()
         
         if existing and existing.id != db_category.id:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre {category.name} ya está en uso")
