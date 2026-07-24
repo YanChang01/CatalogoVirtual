@@ -2,15 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { Search, MessageCircle, Menu, X } from "lucide-react";
 import { WHATSAPP_NUMBER } from "@/config/constants";
-
-const NAV_LINKS = [
-  { label: "Novedades", href: "/catalogo?filtro=nuevo" },
-  { label: "Vibradores", href: "/catalogo?categoria=vibradores" },
-  { label: "Parejas", href: "/catalogo?categoria=parejas" },
-  { label: "BDSM", href: "/catalogo?categoria=bdsm" },
-  { label: "Lubricantes", href: "/catalogo?categoria=lubricantes" },
-  { label: "Accesorios", href: "/catalogo?categoria=accesorios" },
-];
+import { NAV_LINKS } from "@/data/navigation";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);

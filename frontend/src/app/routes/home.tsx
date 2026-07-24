@@ -5,126 +5,11 @@ import ContentLayout from "@/components/layouts/content-layout";
 import { StarRating } from "@/components/ui/star-rating";
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/components/products/product-card";
+import { ALL_PRODUCTS } from "@/data/products";
+import { HOME_CATEGORIES } from "@/data/categories";
+import { TESTIMONIALS } from "@/data/testimonials";
 
-const CATEGORIES = [
-  {
-    name: "Vibradores",
-    count: "124 productos",
-    img: "photo-1760860992203-85ca32536788",
-    span: "col-span-2 row-span-2",
-  },
-  {
-    name: "Para Parejas",
-    count: "68 productos",
-    img: "photo-1699800900071-ae073285ca02",
-    span: "col-span-1 row-span-1",
-  },
-  {
-    name: "BDSM & Bondage",
-    count: "89 productos",
-    img: "photo-1653974123568-b5eff6d851e1",
-    span: "col-span-1 row-span-1",
-  },
-  {
-    name: "Lubricantes",
-    count: "43 productos",
-    img: "photo-1775255487971-af15499994b1",
-    span: "col-span-1 row-span-1",
-  },
-  {
-    name: "Accesorios",
-    count: "57 productos",
-    img: "photo-1700225195176-39ebd9cd5550",
-    span: "col-span-1 row-span-1",
-  },
-];
-
-const PRODUCTS = [
-  {
-    id: 1,
-    name: "Velvet Rose Pro",
-    category: "Vibradores",
-    subcategory: "Clitoris",
-    price: 89.99,
-    originalPrice: 119.99,
-    rating: 4.9,
-    reviews: 312,
-    badge: "Más Vendido",
-    img: "photo-1760860992203-85ca32536788",
-    material: "Silicona médica",
-    isNew: false,
-    onSale: true,
-  },
-  {
-    id: 2,
-    name: "Duo Pulse Connect",
-    category: "Parejas",
-    subcategory: "App",
-    price: 129.0,
-    originalPrice: null,
-    rating: 4.8,
-    reviews: 187,
-    badge: "Nuevo",
-    img: "photo-1779556507342-7951f64a3b86",
-    material: "Silicona médica",
-    isNew: true,
-    onSale: false,
-  },
-  {
-    id: 3,
-    name: "Silk Touch Massager",
-    category: "Vibradores",
-    subcategory: "Cuerpo",
-    price: 64.5,
-    originalPrice: 85.0,
-    rating: 4.7,
-    reviews: 428,
-    badge: null,
-    img: "photo-1695048367315-3d4bcd9c5df4",
-    material: "Silicona médica",
-    isNew: false,
-    onSale: true,
-  },
-  {
-    id: 4,
-    name: "Midnight Ritual Set",
-    category: "BDSM",
-    subcategory: "Sets",
-    price: 149.0,
-    originalPrice: null,
-    rating: 5.0,
-    reviews: 94,
-    badge: "Edición Limitada",
-    img: "photo-1772987714654-2df39af2c658",
-    material: "Cuero vegano",
-    isNew: false,
-    onSale: false,
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Ana M.",
-    location: "Vedado",
-    text: "Envío discretísimo, producto de altísima calidad. La atención al cliente fue impecable. Ya es mi tienda de confianza.",
-    rating: 5,
-    verified: true,
-  },
-  {
-    name: "Carlos R.",
-    location: "Centro Habana",
-    text: "Calidad premium comparable a marcas europeas del doble de precio. Llegó en 48h perfectamente empaquetado.",
-    rating: 5,
-    verified: true,
-  },
-  {
-    name: "Valentina G.",
-    location: "Habana del Este",
-    text: "Me encanta la filosofía de la marca: placer sin tabúes. La selección de productos es sofisticada y bien curada.",
-    rating: 5,
-    verified: true,
-  },
-];
+const FEATURED_PRODUCTS = ALL_PRODUCTS.slice(0, 4);
 
 export default function HomePage() {
   const [wishlist, setWishlist] = useState<number[]>([]);
@@ -220,7 +105,7 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-3 h-[520px] md:h-[600px]">
-          {CATEGORIES.map((cat, i) => (
+          {HOME_CATEGORIES.map((cat, i) => (
             <Link
               key={cat.name}
               to={`/catalogo?categoria=${cat.name.toLowerCase()}`}
@@ -259,7 +144,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {PRODUCTS.map((product) => (
+            {FEATURED_PRODUCTS.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}

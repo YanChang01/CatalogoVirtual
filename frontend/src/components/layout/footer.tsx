@@ -1,3 +1,5 @@
+import { FOOTER_COLUMNS } from "@/data/footer";
+
 export default function Footer() {
   return (
     <footer className="pt-4 pb-8 px-6 md:px-12 max-w-7xl mx-auto mt-24">
@@ -14,36 +16,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-4">{/* Brands */}</div>
         </div>
-        {[
-          {
-            title: "Tienda",
-            links: [
-              "Novedades",
-              "Vibradores",
-              "Parejas",
-              "BDSM",
-              "Lubricantes",
-            ],
-          },
-          {
-            title: "Información",
-            links: [
-              "Sobre nosotros",
-              "Blog",
-              "Guía de materiales",
-              "Cuidado del producto",
-            ],
-          },
-          {
-            title: "Ayuda",
-            links: [
-              "FAQ",
-              "Envíos y devoluciones",
-              "Política de privacidad",
-              "Contacto",
-            ],
-          },
-        ].map((col) => (
+        {FOOTER_COLUMNS.map((col) => (
           <div key={col.title}>
             <p className="text-xs tracking-widest uppercase text-foreground mb-5">
               {col.title}
