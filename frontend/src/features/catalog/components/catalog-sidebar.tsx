@@ -174,14 +174,14 @@ export function CatalogSidebar({
             <div
               className="absolute h-full bg-primary"
               style={{
-                left: `${(priceRange[0] / 200) * 100}%`,
-                right: `${100 - (priceRange[1] / 200) * 100}%`,
+                left: `${(priceRange[0] / 9999) * 100}%`,
+                right: `${100 - (priceRange[1] / 9999) * 100}%`,
               }}
             />
             <input
               type="range"
               min={0}
-              max={200}
+              max={9999}
               step={5}
               value={priceRange[0]}
               onChange={(e) =>
@@ -195,7 +195,7 @@ export function CatalogSidebar({
             <input
               type="range"
               min={0}
-              max={200}
+              max={9999}
               step={5}
               value={priceRange[1]}
               onChange={(e) =>
@@ -223,7 +223,7 @@ export function CatalogSidebar({
             <Input
               type="number"
               min={priceRange[0]}
-              max={200}
+              max={9999}
               value={priceRange[1]}
               onChange={(e) =>
                 setPriceRange([priceRange[0], Number(e.target.value)])
