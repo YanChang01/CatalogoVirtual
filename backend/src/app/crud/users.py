@@ -11,16 +11,15 @@ from core.security import password_hash, verify_password
 
 #Create
 async def create_user(user: UserCreate, session: AsyncSession) -> User:
-    #Validar longitud del fullname
-    if len(user.fullname) < 2 or len(user.fullname) > 100:
-        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="El fullname debe tener al menos 2 caracteres y no más de 100 caracteres")
-
     #Validar unicidad del phone y el email
     query = await session.exec(select(User).where(or_(User.phone == user.phone, User.email == user.email)))
     
     if query.first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El phone {user.phone} y/o el email {user.email} ya existen")
 
+    #Convertir a title_case el fullname
+    user.fullname = user.fullname.title()
+    
     #Aplicar hash al password
     user.password = password_hash(user.password)
     
@@ -71,6 +70,10 @@ async def update_user(email: EmailStr, user: UserUpdate, session: AsyncSession) 
         
         if existing and existing.id != db_user.id:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El email {user.email} ya está en uso")
+
+    #Convertir el fullname a title_case si se envía
+    if user.fullname is not None:
+        user.fullname = user.fullname.title()
 
     # Actualizar solo los campos enviados en la instancia
     update_data = user.model_dump(exclude_unset=True)
