@@ -83,7 +83,7 @@ async def update_user(email: EmailStr, user: UserUpdate, session: AsyncSession) 
     return db_user
     
 async def delete_user(email: EmailStr, session: AsyncSession) -> User:
-    #Validar que el usuario a actualizar existe
+    #Validar que el usuario a eliminar existe
     query = await session.exec(select(User).where(User.email == email, User.is_deleted == False))
     db_user: User = query.first()
             
