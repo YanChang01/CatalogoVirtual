@@ -25,8 +25,8 @@ async def create_product(product: ProductCreate, session: AsyncSession) -> Produ
     #Crear la instancia de Base de Datos
     db_product: Product = Product(**product.model_dump())
     session.add(db_product)
-    session.commit()
-    session.refresh(db_product)
+    await session.commit()
+    await session.refresh(db_product)
     
     return db_product
 
@@ -47,36 +47,37 @@ async def read_products(session: AsyncSession) -> List[Product]:
 
 #Update
 async def update_product(name: str, product: ProductUpdate, session: AsyncSession) -> Product:
-    #Buscar el producto existente no eliminado.
+    # Buscar producto existente (no eliminado)
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
-    db_product: Product = query.first()
+    db_product = query.first()
     
     if not db_product:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Producto {name} no encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Producto '{name}' no encontrado")
 
-    if product.name is not None:
-        #Validar que el nuevo name no esté en uso ya
-        query2 = await session.exec(select(Product).where(Product.name == product.name))
-        
-        if query2.first():
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre {product.name} ya está en uso")
-
-    if product.category_id is not None:
-        #Validar que el category_id exista
-        query3 = await session.exec(select(Category).where(Category.id == product.category_id, Category.is_deleted == False))
-    
-        if not query3.first():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Category_id {product.category_id} no encontrado")
-
-    if product.price is not None:
-        if product.price < 0:
-            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"El precio {product.price} del producto tiene que ser mayor o igual a 0")
-        
-    # Actualizar solo los campos enviados en la instancia
     update_data = product.model_dump(exclude_unset=True)
+
+    # Validar nuevo nombre (si se envía)
+    if "name" in update_data:
+        update_data["name"] = update_data["name"].capitalize()
+        
+        query2 = await session.exec(select(Product).where(Product.name == update_data["name"], Product.is_deleted == False))
+        
+        existing = query2.first()
+        
+        if existing and existing.id != db_product.id:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre '{update_data['name']}' ya está en uso")
+
+    # Validar nueva categoría (si se envía)
+    if "category_id" in update_data:
+        query3 = await session.exec(select(Category).where(Category.id == update_data["category_id"],Category.is_deleted == False))
+        
+        if not query3.first():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría con id {update_data['category_id']} no encontrada")
+
+    # Aplicar actualizaciones
     for key, value in update_data.items():
         setattr(db_product, key, value)
-        
+
     #Actualizar la Base de Datos
     session.add(db_product)
     await session.commit()
