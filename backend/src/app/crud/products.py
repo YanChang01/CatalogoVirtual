@@ -13,9 +13,9 @@ async def create_product(product: ProductCreate, session: AsyncSession) -> Produ
     query = await session.exec(select(Category).where(Category.id == product.category_id, Category.is_deleted == False))
     
     if not query.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"La categoría con id {product.category_id} no existe")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría con id {product.category_id} no encontrada")
     
-    #Validar unicidad del name
+    #Capitalizar y validar unicidad del name
     product.name = product.name.capitalize()
     query = await session.exec(select(Product).where(Product.name == product.name))
     
@@ -32,6 +32,9 @@ async def create_product(product: ProductCreate, session: AsyncSession) -> Produ
 
 #Read
 async def read_product(name: str, session: AsyncSession) -> Product:
+    #Capitalizar name
+    name = name.capitalize()
+    
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
     db_product: Product = query.first()
     
@@ -47,12 +50,15 @@ async def read_products(session: AsyncSession) -> List[Product]:
 
 #Update
 async def update_product(name: str, product: ProductUpdate, session: AsyncSession) -> Product:
+    #Capitalizar name
+    name = name.capitalize()
+    
     # Buscar producto existente (no eliminado)
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
     db_product = query.first()
     
     if not db_product:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Producto '{name}' no encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Producto {name} no encontrado")
 
     update_data = product.model_dump(exclude_unset=True)
 
@@ -60,18 +66,18 @@ async def update_product(name: str, product: ProductUpdate, session: AsyncSessio
     if "name" in update_data:
         update_data["name"] = update_data["name"].capitalize()
         
-        query2 = await session.exec(select(Product).where(Product.name == update_data["name"], Product.is_deleted == False))
+        query = await session.exec(select(Product).where(Product.name == update_data["name"], Product.is_deleted == False))
         
-        existing = query2.first()
+        existing = query.first()
         
         if existing and existing.id != db_product.id:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre '{update_data['name']}' ya está en uso")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El nombre {update_data['name']} ya está en uso")
 
     # Validar nueva categoría (si se envía)
     if "category_id" in update_data:
-        query3 = await session.exec(select(Category).where(Category.id == update_data["category_id"],Category.is_deleted == False))
+        query = await session.exec(select(Category).where(Category.id == update_data["category_id"], Category.is_deleted == False))
         
-        if not query3.first():
+        if not query.first():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría con id {update_data['category_id']} no encontrada")
 
     # Aplicar actualizaciones
@@ -87,6 +93,9 @@ async def update_product(name: str, product: ProductUpdate, session: AsyncSessio
         
 #Delete
 async def delete_product(name: str, session: AsyncSession) -> Product:
+    #Capitalizar name
+    name = name.capitalize()
+    
     #Validar que el producto a eliminar existe
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
     db_product: Product = query.first()
