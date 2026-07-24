@@ -38,7 +38,7 @@ export function ActiveFilterChips({
     newOnly ||
     minRating > 0 ||
     priceRange[0] > 0 ||
-    priceRange[1] < 200;
+    priceRange[1] < 9999;
 
   if (!hasActiveFilters) return null;
 
@@ -86,9 +86,9 @@ export function ActiveFilterChips({
           {minRating}+ estrellas <X size={10} />
         </button>
       )}
-      {(priceRange[0] > 0 || priceRange[1] < 200) && (
+      {(priceRange[0] > 0 || priceRange[1] < 9999) && (
         <button
-          onClick={() => onSetPriceRange([0, 200])}
+          onClick={() => onSetPriceRange([0, 9999])}
           className="flex items-center gap-1.5 text-xs border border-primary/40 text-primary px-3 py-1.5 hover:bg-primary/10 transition-colors"
         >
           ${priceRange[0]} – ${priceRange[1]} <X size={10} />

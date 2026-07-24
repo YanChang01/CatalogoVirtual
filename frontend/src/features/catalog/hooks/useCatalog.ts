@@ -17,7 +17,7 @@ export function useCatalog() {
     return [];
   });
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
   const [minRating, setMinRating] = useState(0);
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [newOnly, setNewOnly] = useState(
@@ -46,7 +46,7 @@ export function useCatalog() {
   const clearAll = () => {
     setSelectedCategories([]);
     setSelectedMaterials([]);
-    setPriceRange([0, 200]);
+    setPriceRange([0, 9999]);
     setMinRating(0);
     setOnSaleOnly(false);
     setNewOnly(false);
@@ -112,7 +112,7 @@ export function useCatalog() {
     (onSaleOnly ? 1 : 0) +
     (newOnly ? 1 : 0) +
     (minRating > 0 ? 1 : 0) +
-    (priceRange[0] > 0 || priceRange[1] < 200 ? 1 : 0);
+    (priceRange[0] > 0 || priceRange[1] < 9999 ? 1 : 0);
 
   const productsCountByCategory = useMemo(() => {
     const counts: Record<string, number> = {};
