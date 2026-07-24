@@ -91,7 +91,7 @@ export function ActiveFilterChips({
           onClick={() => onSetPriceRange([0, 200])}
           className="flex items-center gap-1.5 text-xs border border-primary/40 text-primary px-3 py-1.5 hover:bg-primary/10 transition-colors"
         >
-          €{priceRange[0]} – €{priceRange[1]} <X size={10} />
+          ${priceRange[0]} – ${priceRange[1]} <X size={10} />
         </button>
       )}
       <button

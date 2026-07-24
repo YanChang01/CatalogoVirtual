@@ -200,7 +200,7 @@ export default function HomePage() {
             >
               Velvet Rose Pro
             </p>
-            <p className="text-primary text-sm mt-0.5">€89.99</p>
+            <p className="text-primary text-sm mt-0.5">$89.99</p>
           </div>
         </div>
       </section>
