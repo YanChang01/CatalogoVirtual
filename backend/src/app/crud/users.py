@@ -16,10 +16,10 @@ async def create_user(user: UserCreate, session: AsyncSession) -> User:
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="El fullname debe tener al menos 2 caracteres y no más de 100 caracteres")
 
     #Validar unicidad del phone y el email
-    query = await session.exec(select(User).where(or_(User.phone == user.phone, User.email == user.email), User.is_deleted == False))
+    query = await session.exec(select(User).where(or_(User.phone == user.phone, User.email == user.email)))
     
     if query.first():
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El phone {user.phone} o el email {user.email} ya existen")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El phone {user.phone} y/o el email {user.email} ya existen")
 
     #Aplicar hash al password
     user.password = password_hash(user.password)
@@ -58,16 +58,18 @@ async def update_user(email: EmailStr, user: UserUpdate, session: AsyncSession) 
 
     #Validar que el nuevo phone del usuario no esté en uso ya
     if user.phone is not None:
-        query2 = await session.exec(select(User).where(User.phone == user.phone, User.is_deleted == False))
+        query = await session.exec(select(User).where(User.phone == user.phone))
+        existing = query.first()
             
-        if query2.first():
+        if existing and existing.id != db_user.id:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El phone {user.phone} ya está en uso")
 
     #Validar que el nuevo email del usuario no esté en uso ya
     if user.email is not None:
-        query3 = await session.exec(select(User).where(User.email == user.email, User.is_deleted == False))
+        query = await session.exec(select(User).where(User.email == user.email))
+        existing = query.first()
         
-        if query3.first():
+        if existing and existing.id != db_user.id:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"El email {user.email} ya está en uso")
 
     # Actualizar solo los campos enviados en la instancia
