@@ -10,8 +10,8 @@ from schemas.schemas import CategoryCreate, CategoryResponse, CategoryUpdate, Ca
 
 #Create
 async def create_category(category: CategoryCreate, session: AsyncSession) -> Category:
-    #Capitalizar el name
-    category.name = category.name.capitalize()
+    #Convertir a title_case el name
+    category.name = category.name.title()
     
     #Validar unicidad del name
     query = await session.exec(select(Category).where(Category.name == category.name))
@@ -29,8 +29,8 @@ async def create_category(category: CategoryCreate, session: AsyncSession) -> Ca
 
 #Read
 async def read_category(name: str, session: AsyncSession) -> Category:
-    #Capitalizar name
-    name = name.capitalize()
+    #Convertir a title_case el name
+    name = name.title()
     
     query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
     db_category: Category = query.first()
@@ -47,8 +47,8 @@ async def read_categories(session: AsyncSession) -> List[Category]:
 
 #Update
 async def update_category(name: str, category: CategoryUpdate, session: AsyncSession) -> Category:
-    #Capitalizar name
-    name = name.capitalize()
+    #Convertir a title_case el name
+    name = name.title()
     
     #Buscar la categoría existente no eliminada.
     query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
@@ -59,8 +59,8 @@ async def update_category(name: str, category: CategoryUpdate, session: AsyncSes
 
     #Validar que el nuevo nombre de la categoría no esté en uso ya
     if category.name is not None:
-        #Capitalizar name
-        category.name = category.name.capitalize()
+        #Convertir a title_case el name
+        category.name = category.name.title()
         
         query = await session.exec(select(Category).where(Category.name == category.name))
         existing = query.first()
@@ -82,8 +82,8 @@ async def update_category(name: str, category: CategoryUpdate, session: AsyncSes
 
 #Delete
 async def delete_category(name: str, session: AsyncSession) -> Category:
-    #Capitalizar name
-    name = name.capitalize()
+    #Convertir el name a title_case
+    name = name.title()
     
     #Validar que la categoría a eliminar existe
     query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == False))
