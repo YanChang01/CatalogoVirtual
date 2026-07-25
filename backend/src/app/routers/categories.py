@@ -4,18 +4,21 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models.models import Category
 from schemas.schemas import CategoryCreate, CategoryResponse, CategoryUpdate, CategoryWithProducts
-from crud.categories import create_category, read_category, read_categories, update_category, delete_category
+from crud.categories import create_category, read_category, read_categories, read_category_deleted, read_categories_deleted, update_category, delete_category
 from core.client import get_async_session
 
 #Router
 router = APIRouter(prefix="/categories")
 
 #EndPoints
+
+#POST
 @router.post("/create", status_code=status.HTTP_201_CREATED, response_model=CategoryResponse)
 async def create(category: CategoryCreate, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
     return await create_category(category=category, session=session)
 
+#GET
 @router.get("/read/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
 async def read(name: str, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
@@ -26,11 +29,23 @@ async def read2(session: AsyncSession = Depends(get_async_session)) -> List[Cate
     
     return await read_categories(session=session)
 
+@router.get("/read/deleted/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
+async def read3(name: str, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
+    
+    return await read_category_deleted(name=name, session=session)
+
+@router.get("/read/deleted", status_code=status.HTTP_200_OK, response_model=List[CategoryResponse])
+async def read4(session: AsyncSession = Depends(get_async_session)) -> List[CategoryResponse]:
+    
+    return await read_categories_deleted(session=session)
+
+#PUT
 @router.put("/update/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
 async def update(name: str, category: CategoryUpdate, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
     return update_category(name=name, category=category, session=session)
 
+#DELETE
 @router.delete("/delete/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
 async def delete(name: str, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
