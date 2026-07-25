@@ -46,6 +46,20 @@ async def read_users(session: AsyncSession) -> List[User]:
     
     return query.all()
 
+async def read_user_deleted(email: EmailStr, session: AsyncSession) -> User:
+    query = await session.exec(select(User).where(User.email == email, User.is_deleted == True))
+    db_user: User = query.first()
+    
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Usuario con email {email} no encontrado")
+
+    return db_user
+
+async def read_users_deleted(session: AsyncSession) -> List[User]:
+    query = await session.exec(select(User).where(User.is_deleted == True))
+    
+    return query.all()
+
 #Update
 async def update_user(email: EmailStr, user: UserUpdate, session: AsyncSession) -> User:
     #Validar que el usuario a actualizar existe
