@@ -48,6 +48,23 @@ async def read_products(session: AsyncSession) -> List[Product]:
     
     return query.all()
 
+async def read_product_deleted(name: str, session: AsyncSession) -> Product:
+    #Convertir a title_case el name
+    name = name.title()
+    
+    query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == True))
+    db_product: Product = query.first()
+    
+    if not db_product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"El producto {name} no existe")
+    
+    return db_product
+
+async def read_products_deleted(session: AsyncSession) -> List[Product]:
+    query = await session.exec(select(Product).where(Product.is_deleted == True))
+    
+    return query.all()
+
 #Update
 async def update_product(name: str, product: ProductUpdate, session: AsyncSession) -> Product:
     #Convertir a title_case el name
