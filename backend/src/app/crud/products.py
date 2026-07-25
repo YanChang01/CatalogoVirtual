@@ -15,8 +15,8 @@ async def create_product(product: ProductCreate, session: AsyncSession) -> Produ
     if not query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría con id {product.category_id} no encontrada")
     
-    #Capitalizar y validar unicidad del name
-    product.name = product.name.capitalize()
+    #Convertir a title_case y validar unicidad del name
+    product.name = product.name.title()
     query = await session.exec(select(Product).where(Product.name == product.name))
     
     if query.first():
@@ -32,8 +32,8 @@ async def create_product(product: ProductCreate, session: AsyncSession) -> Produ
 
 #Read
 async def read_product(name: str, session: AsyncSession) -> Product:
-    #Capitalizar name
-    name = name.capitalize()
+    #Convertir a title_case el name
+    name = name.title()
     
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
     db_product: Product = query.first()
@@ -50,8 +50,8 @@ async def read_products(session: AsyncSession) -> List[Product]:
 
 #Update
 async def update_product(name: str, product: ProductUpdate, session: AsyncSession) -> Product:
-    #Capitalizar name
-    name = name.capitalize()
+    #Convertir a title_case el name
+    name = name.title()
     
     # Buscar producto existente (no eliminado)
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
@@ -64,7 +64,7 @@ async def update_product(name: str, product: ProductUpdate, session: AsyncSessio
 
     # Validar nuevo nombre (si se envía)
     if "name" in update_data:
-        update_data["name"] = update_data["name"].capitalize()
+        update_data["name"] = update_data["name"].title()
         
         query = await session.exec(select(Product).where(Product.name == update_data["name"], Product.is_deleted == False))
         
@@ -93,8 +93,8 @@ async def update_product(name: str, product: ProductUpdate, session: AsyncSessio
         
 #Delete
 async def delete_product(name: str, session: AsyncSession) -> Product:
-    #Capitalizar name
-    name = name.capitalize()
+    #Convertir a title_case el name
+    name = name.title()
     
     #Validar que el producto a eliminar existe
     query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == False))
