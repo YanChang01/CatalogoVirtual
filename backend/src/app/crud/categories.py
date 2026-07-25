@@ -45,6 +45,23 @@ async def read_categories(session: AsyncSession) -> List[Category]:
     
     return query.all()
 
+async def read_category_deleted(name: str, session: AsyncSession) -> Category:
+    #Convertir a title_case el name
+    name = name.title()
+    
+    query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == True))
+    db_category: Category = query.first()
+    
+    if not db_category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría {name} no encontrada")
+    
+    return db_category
+
+async def read_categories_deleted(session: AsyncSession) -> List[Category]:
+    query = await session.exec(select(Category).where(Category.is_deleted == True))
+    
+    return query.all()
+
 #Update
 async def update_category(name: str, category: CategoryUpdate, session: AsyncSession) -> Category:
     #Convertir a title_case el name
