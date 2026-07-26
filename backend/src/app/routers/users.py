@@ -30,12 +30,12 @@ async def read2(session: AsyncSession = Depends(get_async_session)) -> List[User
     
     return await read_users(session=session)
 
-@router.get("/read/deleted/{email}", status_code=status.HTTP_200_OK, response_model=UserResponse)
+@router.get("/read-deleted/{email}", status_code=status.HTTP_200_OK, response_model=UserResponse)
 async def read3(email: EmailStr, session: AsyncSession = Depends(get_async_session)) -> UserResponse:
     
     return await read_user_deleted(email=email, session=session)
 
-@router.get("/read/deleted", status_code=status.HTTP_200_OK, response_model=List[UserResponse])
+@router.get("/read-deleted", status_code=status.HTTP_200_OK, response_model=List[UserResponse])
 async def read4(session: AsyncSession = Depends(get_async_session)) -> List[UserResponse]:
     
     return await read_users_deleted(session=session)
