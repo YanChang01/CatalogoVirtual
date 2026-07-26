@@ -29,12 +29,12 @@ async def read2(session: AsyncSession = Depends(get_async_session)) -> List[Cate
     
     return await read_categories(session=session)
 
-@router.get("/read/deleted/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
+@router.get("/read-deleted/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
 async def read3(name: str, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
     return await read_category_deleted(name=name, session=session)
 
-@router.get("/read/deleted", status_code=status.HTTP_200_OK, response_model=List[CategoryResponse])
+@router.get("/read-deleted", status_code=status.HTTP_200_OK, response_model=List[CategoryResponse])
 async def read4(session: AsyncSession = Depends(get_async_session)) -> List[CategoryResponse]:
     
     return await read_categories_deleted(session=session)
