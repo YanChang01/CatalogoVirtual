@@ -29,12 +29,12 @@ async def read2(session: AsyncSession = Depends(get_async_session)) -> List[Prod
     
     return await read_products(session=session)
 
-@router.get("/read/deleted/{name}", status_code=status.HTTP_200_OK, response_model=ProductResponse)
+@router.get("/read-deleted/{name}", status_code=status.HTTP_200_OK, response_model=ProductResponse)
 async def read3(name: str, session: AsyncSession = Depends(get_async_session)) -> ProductResponse:
     
     return await read_product_deleted(name=name, session=session)
 
-@router.get("/read/deleted", status_code=status.HTTP_200_OK, response_model=List[ProductResponse])
+@router.get("/read-deleted", status_code=status.HTTP_200_OK, response_model=List[ProductResponse])
 async def read4(session: AsyncSession = Depends(get_async_session)) -> List[ProductResponse]:
     
     return await read_products_deleted(session=session)
