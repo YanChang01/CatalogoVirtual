@@ -100,7 +100,8 @@ async def update_user(email: EmailStr, user: UserUpdate, session: AsyncSession) 
     await session.refresh(db_user)
         
     return db_user
-    
+
+#Delete
 async def delete_user(email: EmailStr, session: AsyncSession) -> User:
     #Validar que el usuario a eliminar existe
     query = await session.exec(select(User).where(User.email == email, User.is_deleted == False))
@@ -117,3 +118,57 @@ async def delete_user(email: EmailStr, session: AsyncSession) -> User:
     
     return db_user
 
+async def delete_users(session: AsyncSession) -> List[User]:
+    query = await session.exec(select(User).where(User.is_deleted == False))
+    db_users: List[User] = query.all()
+    
+    if not db_users:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen usuarios activos")
+    
+    for user in db_users:
+        user.is_deleted = True
+    
+    #Actualizar la Base de Datos
+    session.add_all(db_users)
+    await session.commit()
+    
+    for user in db_users:
+        await session.refresh(user)
+    
+    return db_users
+
+#Patch
+async def restaurar_user(email: EmailStr, session: AsyncSession) -> User:
+    #Buscar el usuario existente eliminado.
+    query = await session.exec(select(User).where(User.email == email, User.is_deleted == True))
+    db_user: User = query.first()
+        
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Usuario {email} no encontrado")
+    
+    #Actualizar campo is_deleted = False
+    db_user.is_deleted = False
+    session.add(db_user)
+    await session.commit()
+    await session.refresh(db_user)
+    
+    return db_user
+
+async def restaurar_users(session: AsyncSession) -> List[User]:
+    query = await session.exec(select(User).where(User.is_deleted == True))
+    db_users: List[User] = query.all()
+    
+    if not db_users:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen usuarios inactivos")
+    
+    for user in db_users:
+        user.is_deleted = False
+    
+    #Actualizar la Base de Datos
+    session.add_all(db_users)
+    await session.commit()
+    
+    for user in db_users:
+        await session.refresh(user)
+        
+    return db_users
