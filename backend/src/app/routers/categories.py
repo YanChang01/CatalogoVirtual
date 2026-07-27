@@ -43,13 +43,13 @@ async def read4(session: AsyncSession = Depends(get_async_session)) -> List[Cate
 @router.put("/update/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
 async def update(name: str, category: CategoryUpdate, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
-    return update_category(name=name, category=category, session=session)
+    return await update_category(name=name, category=category, session=session)
 
 #DELETE
 @router.delete("/delete/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
 async def delete(name: str, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
-    return delete_category(name=name, session=session)
+    return await delete_category(name=name, session=session)
 
 
 
