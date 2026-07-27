@@ -62,8 +62,6 @@ async def read_categories_deleted(session: AsyncSession) -> List[Category]:
     
     return query.all()
 
-
-
 #Update
 async def update_category(name: str, category: CategoryUpdate, session: AsyncSession) -> Category:
     #Convertir a title_case el name
