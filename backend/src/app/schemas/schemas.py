@@ -41,6 +41,7 @@ class UserResponse(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    is_deleted: bool
 
     class Config:
         from_attributes = True
@@ -59,6 +60,7 @@ class CategoryResponse(CategoryBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    is_deleted: bool
 
     class Config:
         from_attributes = True
@@ -85,6 +87,7 @@ class ProductResponse(ProductBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    is_deleted: bool
 
     class Config:
         from_attributes = True
