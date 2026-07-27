@@ -62,6 +62,8 @@ async def read_categories_deleted(session: AsyncSession) -> List[Category]:
     
     return query.all()
 
+
+
 #Update
 async def update_category(name: str, category: CategoryUpdate, session: AsyncSession) -> Category:
     #Convertir a title_case el name
@@ -117,7 +119,60 @@ async def delete_category(name: str, session: AsyncSession) -> Category:
     
     return db_category
     
+async def delete_categories(session: AsyncSession) -> List[Category]:
+    query = await session.exec(select(Category).where(Category.is_deleted == False))
+    db_categories: List[Category] = query.all()
     
+    if not db_categories:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen categorías activas")
     
+    for category in db_categories:
+        category.is_deleted = True
     
+    #Actualizar la Base de Datos
+    session.add_all(db_categories)
+    await session.commit()
+    
+    for category in db_categories:
+        await session.refresh(category)
+    
+    return db_categories
 
+#Patch
+async def restaurar_category(name: str, session: AsyncSession) -> Category:
+    #Convertir a title_case el name
+    name = name.title()
+        
+    #Buscar la categoría existente eliminada.
+    query = await session.exec(select(Category).where(Category.name == name, Category.is_deleted == True))
+    db_category: Category = query.first()
+        
+    if not db_category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Categoría {name} no encontrada")
+    
+    #Actualizar campo is_deleted = False
+    db_category.is_deleted = False
+    session.add(db_category)
+    await session.commit()
+    await session.refresh(db_category)
+    
+    return db_category
+
+async def restaurar_categories(session: AsyncSession) -> List[Category]:
+    query = await session.exec(select(Category).where(Category.is_deleted == True))
+    db_categories: List[Category] = query.all()
+    
+    if not db_categories:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen categorías inactivas")
+    
+    for category in db_categories:
+        category.is_deleted = False
+    
+    #Actualizar la Base de Datos
+    session.add_all(db_categories)
+    await session.commit()
+    
+    for category in db_categories:
+        await session.refresh(category)
+        
+    return db_categories
