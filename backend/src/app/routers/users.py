@@ -5,7 +5,7 @@ from pydantic import EmailStr
 
 from models.models import User
 from schemas.schemas import UserCreate, UserResponse, UserUpdate
-from crud.users import create_user, read_user, read_users, read_user_deleted, read_users_deleted, update_user, delete_user
+from crud.users import create_user, read_user, read_users, read_user_deleted, read_users_deleted, update_user, delete_user, delete_users, restaurar_user, restaurar_users
 from core.client import get_async_session
 
 #Router
@@ -51,3 +51,19 @@ async def update(email: EmailStr, user: UserUpdate, session: AsyncSession = Depe
 async def delete(email: EmailStr, session: AsyncSession = Depends(get_async_session)) -> UserResponse:
     
     return await delete_user(email=email, session=session)
+
+@router.delete("/delete", status_code=status.HTTP_200_OK, response_model=List[UserResponse])
+async def delete2(session: AsyncSession = Depends(get_async_session)) -> List[UserResponse]:
+    
+    return await delete_users(session=session)
+
+#PATCH
+@router.patch("/restaurar/{email}", status_code=status.HTTP_200_OK, response_model=UserResponse)
+async def restaurar(email: EmailStr, session: AsyncSession = Depends(get_async_session)) -> UserResponse:
+    
+    return await restaurar_user(email=email, session=session)
+
+@router.patch("/restaurar", status_code=status.HTTP_200_OK, response_model=List[UserResponse])
+async def restaurar2(session: AsyncSession = Depends(get_async_session)) -> List[UserResponse]:
+    
+    return await restaurar_users(session=session)
