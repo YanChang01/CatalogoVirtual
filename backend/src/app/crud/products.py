@@ -128,7 +128,63 @@ async def delete_product(name: str, session: AsyncSession) -> Product:
     
     return db_product
         
+async def delete_products(session: AsyncSession) -> List[Product]:
+    query = await session.exec(select(Product).where(Product.is_deleted == False))
+    db_products: List[Product] = query.all()
+    
+    if not db_products:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen productos en la Base de Datos")
+    
+    for products in db_products:
+        products.is_deleted = True
+    
+    #Actualizar la Base de Datos
+    session.add_all(db_products)
+    await session.commit()
+    
+    for products in db_products:
+        await session.refresh(products)
+    
+    return db_products
+
+#Patch
+async def restaurar_product(name: str, session: AsyncSession) -> Product:
+    #Convertir a title_case el name
+    name = name.title()
         
+    #Buscar el producto existente eliminado.
+    query = await session.exec(select(Product).where(Product.name == name, Product.is_deleted == True))
+    db_product: Product = query.first()
+        
+    if not db_product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Producto {name} no encontrado")
+    
+    #Actualizar campo is_deleted = False
+    db_product.is_deleted = False
+    session.add(db_product)
+    await session.commit()
+    await session.refresh(db_product)
+    
+    return db_product
+
+async def restaurar_products(session: AsyncSession) -> List[Product]:
+    query = await session.exec(select(Product).where(Product.is_deleted == True))
+    db_products: List[Product] = query.all()
+    
+    if not db_products:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No existen productos en la Base de Datos")
+    
+    for product in db_products:
+        product.is_deleted = False
+    
+    #Actualizar la Base de Datos
+    session.add_all(db_products)
+    await session.commit()
+    
+    for product in db_products:
+        await session.refresh(product)
+        
+    return db_products
         
         
         
