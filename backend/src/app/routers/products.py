@@ -4,7 +4,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models.models import Product
 from schemas.schemas import ProductCreate, ProductResponse, ProductUpdate, ProductWithCategory
-from crud.products import create_product, read_product, read_products, read_product_deleted, read_products_deleted, update_product, delete_product
+from crud.products import create_product, read_product, read_products, read_product_deleted, read_products_deleted, update_product, delete_product, delete_products, restaurar_product, restaurar_products
 from core.client import get_async_session
 
 #Router
@@ -51,7 +51,21 @@ async def delete(name: str, session: AsyncSession = Depends(get_async_session)) 
     
     return await delete_product(name=name, session=session)
 
+@router.delete("/delete", status_code=status.HTTP_200_OK, response_model=List[ProductResponse])
+async def delete2(session: AsyncSession = Depends(get_async_session)) -> List[ProductResponse]:
+    
+    return await delete_products(session=session)
 
+#PATCH
+@router.patch("/restaurar/{name}", status_code=status.HTTP_200_OK, response_model=ProductResponse)
+async def restaurar(name: str, session: AsyncSession = Depends(get_async_session)) -> ProductResponse:
+    
+    return await restaurar_product(name=name, session=session)
+
+@router.patch("/restaurar", status_code=status.HTTP_200_OK, response_model=List[ProductResponse])
+async def restaurar2(session: AsyncSession = Depends(get_async_session)) -> List[ProductResponse]:
+    
+    return await restaurar_products(session=session)
 
 
 
