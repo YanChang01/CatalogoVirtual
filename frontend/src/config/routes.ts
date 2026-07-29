@@ -13,4 +13,9 @@ export const routes = {
       path: "/admin/dashboard",
     },
   },
+  auth: {
+    login: {
+      path: "/login",
+    },
+  },
 } as const;

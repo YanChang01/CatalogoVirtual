@@ -1,5 +1,6 @@
 import { Input as InputPrimitive } from "@base-ui/react/input";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 import { cn } from "@/utils/utils";
 
@@ -31,6 +32,8 @@ interface InputProps
   error?: string;
   label?: string;
   helperText?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 function Input({
@@ -41,6 +44,8 @@ function Input({
   label,
   helperText,
   id,
+  leftIcon,
+  rightIcon,
   ...props
 }: InputProps) {
   const inputId = id || props.name;
@@ -52,14 +57,35 @@ function Input({
           {label}
         </label>
       )}
-      <InputPrimitive
-        data-slot="input"
-        id={inputId}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
-        className={cn(inputVariants({ variant, size, className }))}
-        {...props}
-      />
+      <div className="relative">
+        {leftIcon && (
+          <div
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+            aria-hidden="true"
+          >
+            {leftIcon}
+          </div>
+        )}
+        <InputPrimitive
+          data-slot="input"
+          id={inputId}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
+          className={cn(
+            inputVariants({ variant, size, className }),
+            leftIcon && "pl-10",
+            rightIcon && "pr-10",
+          )}
+          {...props}
+        />
+        {rightIcon && (
+          <div
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+          >
+            {rightIcon}
+          </div>
+        )}
+      </div>
       {error && (
         <p id={`${inputId}-error`} className="text-sm text-destructive" role="alert">
           {error}
