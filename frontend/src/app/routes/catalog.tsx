@@ -6,7 +6,6 @@ import { CatalogProductGrid } from "@/features/catalog/components/CatalogProduct
 import { CatalogEmptyState } from "@/features/catalog/components/CatalogEmptyState";
 import { CatalogSidebar } from "@/features/catalog/components/catalog-sidebar";
 import { useCatalog } from "@/features/catalog/hooks/useCatalog";
-import { CATEGORIES, MATERIALS } from "@/data/products";
 
 export default function Catalog() {
   const {
@@ -36,6 +35,9 @@ export default function Catalog() {
     toggleWishlist,
     sidebarOpen,
     setSidebarOpen,
+    categories,
+    materials,
+    loading,
   } = useCatalog();
 
   return (
@@ -80,8 +82,8 @@ export default function Catalog() {
                 setNewOnly={setNewOnly}
                 clearAll={clearAll}
                 activeFiltersCount={activeFiltersCount}
-                categories={CATEGORIES}
-                materials={MATERIALS}
+                categories={categories}
+                materials={materials}
                 productsCountByCategory={productsCountByCategory}
               />
             </div>
@@ -115,14 +117,18 @@ export default function Catalog() {
                     setNewOnly={setNewOnly}
                     clearAll={clearAll}
                     activeFiltersCount={activeFiltersCount}
-                    categories={CATEGORIES}
-                    materials={MATERIALS}
+                    categories={categories}
+                    materials={materials}
                     productsCountByCategory={productsCountByCategory}
                   />
                 }
               />
 
-              {filteredProducts.length === 0 ? (
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <p className="text-muted-foreground">Cargando productos...</p>
+                </div>
+              ) : filteredProducts.length === 0 ? (
                 <CatalogEmptyState onClearFilters={clearAll} />
               ) : (
                 <CatalogProductGrid
@@ -133,7 +139,7 @@ export default function Catalog() {
                 />
               )}
 
-              {filteredProducts.length > 0 && (
+              {filteredProducts.length > 0 && !loading && (
                 <p className="text-center text-xs text-muted-foreground mt-10">
                   Mostrando {filteredProducts.length} de {filteredProducts.length} productos
                 </p>

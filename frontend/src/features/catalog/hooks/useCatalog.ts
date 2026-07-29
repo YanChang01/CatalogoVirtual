@@ -1,18 +1,19 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { ALL_PRODUCTS, CATEGORIES } from "@/data/products";
+import { fetchProducts, getCategoriesFromProducts, getMaterialsFromProducts, getProductsCountByCategory, type Product } from "@/lib/api/products";
 
 export function useCatalog() {
   const [searchParams] = useSearchParams();
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
     const cat = searchParams.get("categoria") ?? "";
     if (cat) {
-      const match = CATEGORIES.find((c) =>
-        c.toLowerCase().includes(cat.toLowerCase()),
-      );
-      return match ? [match] : [];
+      return [cat];
     }
     return [];
   });
@@ -27,6 +28,31 @@ export function useCatalog() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadProducts() {
+      try {
+        setLoading(true);
+        const data = await fetchProducts();
+        if (mounted) {
+          setProducts(data);
+          setError(null);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError("Error al cargar los productos");
+          console.error(err);
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    loadProducts();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const toggleWishlist = (id: number) =>
     setWishlist((prev) =>
@@ -54,7 +80,7 @@ export function useCatalog() {
   };
 
   const filteredProducts = useMemo(() => {
-    let list = ALL_PRODUCTS.filter((p) => {
+    let list = products.filter((p) => {
       if (
         search &&
         !p.name.toLowerCase().includes(search.toLowerCase()) &&
@@ -104,6 +130,7 @@ export function useCatalog() {
     onSaleOnly,
     newOnly,
     sort,
+    products,
   ]);
 
   const activeFiltersCount =
@@ -114,15 +141,24 @@ export function useCatalog() {
     (minRating > 0 ? 1 : 0) +
     (priceRange[0] > 0 || priceRange[1] < 9999 ? 1 : 0);
 
-  const productsCountByCategory = useMemo(() => {
-    const counts: Record<string, number> = {};
-    ALL_PRODUCTS.forEach((p) => {
-      counts[p.category] = (counts[p.category] || 0) + 1;
-    });
-    return counts;
-  }, []);
+  const productsCountByCategory = useMemo(
+    () => getProductsCountByCategory(products),
+    [products],
+  );
+
+  const categories = useMemo(
+    () => getCategoriesFromProducts(products),
+    [products],
+  );
+
+  const materials = useMemo(
+    () => getMaterialsFromProducts(products),
+    [products],
+  );
 
   return {
+    loading,
+    error,
     search,
     setSearch,
     selectedCategories,
@@ -149,5 +185,7 @@ export function useCatalog() {
     toggleWishlist,
     sidebarOpen,
     setSidebarOpen,
+    categories,
+    materials,
   };
 }

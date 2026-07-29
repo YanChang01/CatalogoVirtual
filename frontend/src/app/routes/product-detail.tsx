@@ -1,20 +1,78 @@
-import { useState } from "react";
-import { useParams } from "react-router";
-import { MessageCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router";
+import { MessageCircle, ChevronLeft } from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
 import { WHATSAPP_NUMBER } from "@/config/constants";
-
-import { ALL_PRODUCTS } from "@/data/products";
+import { fetchProductByName } from "@/lib/api/products";
 import ContentLayout from "@/components/layouts/content-layout";
 
 export default function ProductDetail() {
-  const { productId } = useParams();
-  const id = Number(productId);
+  const { productName } = useParams();
+  const name = productName ? decodeURIComponent(productName) : "";
   const [selectedImage, setSelectedImage] = useState(0);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const product = ALL_PRODUCTS.find((p) => p.id === id);
+  useEffect(() => {
+    let mounted = true;
+    if (!name) return;
+    async function loadProduct() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchProductByName(name);
+        if (mounted) {
+          if (data) {
+            setProduct(data);
+            setError(null);
+          } else {
+            setError("Producto no encontrado");
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          setError("Error al cargar el producto");
+          console.error(e);
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    loadProduct();
+    return () => {
+      mounted = false;
+    };
+  }, [name]);
 
-  if (!product) return null;
+  if (loading) {
+    return (
+      <ContentLayout>
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <p className="text-muted-foreground">Cargando producto...</p>
+        </div>
+      </ContentLayout>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <ContentLayout>
+        <div className="min-h-screen bg-background flex items-center justify-center px-6">
+          <div className="text-center">
+            <p className="text-foreground mb-4">{error || "Producto no encontrado"}</p>
+            <Link
+              to="/catalogo"
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              <ChevronLeft size={16} />
+              Volver al catálogo
+            </Link>
+          </div>
+        </div>
+      </ContentLayout>
+    );
+  }
 
   const images = [
     product.img,
@@ -181,4 +239,20 @@ export default function ProductDetail() {
       </div>
     </ContentLayout>
   );
+}
+
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  subcategory?: string;
+  price: number;
+  originalPrice: number | null;
+  rating: number;
+  reviews: number;
+  badge: string | null;
+  img: string;
+  material?: string;
+  isNew?: boolean;
+  onSale?: boolean;
 }

@@ -18,12 +18,14 @@ export function ProductCard({
   onToggleWishlist,
   isWishlisted,
 }: ProductCardProps) {
+  const productPath = routes.product.link(product.name);
+
   if (view === "list") {
     return (
       <div className="group bg-card border border-border flex gap-5 p-4 hover:border-border/60 transition-colors">
         <div className="relative w-28 h-28 shrink-0 overflow-hidden bg-muted">
           <Link
-            to={routes.product.path(product.id)}
+            to={productPath}
             className="block w-full h-full"
           >
             <img
@@ -43,7 +45,7 @@ export function ProductCard({
             {product.category}
           </p>
           <Link
-            to={routes.product.path(product.id)}
+            to={productPath}
             className="hover:text-primary transition-colors"
           >
             <h3
@@ -107,7 +109,7 @@ export function ProductCard({
     <div className="group bg-card border border-border flex flex-col">
       <div className="relative aspect-square overflow-hidden bg-muted">
         <Link
-          to={routes.product.path(product.id)}
+          to={productPath}
           className="block w-full h-full"
         >
           <img
@@ -142,10 +144,10 @@ export function ProductCard({
         <p className="text-[10px] text-primary tracking-widest uppercase mb-1">
           {product.category}
         </p>
-        <Link
-          to={routes.product.path(product.id)}
-          className="hover:text-primary transition-colors"
-        >
+<Link
+            to={productPath}
+            className="hover:text-primary transition-colors"
+          >
           <h3
             className="text-base text-foreground mb-1.5 leading-tight"
             style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
