@@ -21,6 +21,8 @@ export function useCatalog() {
   const [sort, setSort] = useState("newest");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12;
 
   useEffect(() => {
     let mounted = true;
@@ -46,6 +48,12 @@ export function useCatalog() {
       mounted = false;
     };
   }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedCategories, priceRange]);
+/* eslint-enable react-hooks/set-state-in-effect */
 
   const toggleCategory = (cat: string) =>
     setSelectedCategories((prev) =>
@@ -100,6 +108,16 @@ export function useCatalog() {
     products,
   ]);
 
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(filteredProducts.length / pageSize)),
+    [filteredProducts.length]
+  );
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, currentPage]);
+
   const activeFiltersCount =
     selectedCategories.length +
     (priceRange[0] > 0 || priceRange[1] < 9999 ? 1 : 0);
@@ -130,6 +148,11 @@ export function useCatalog() {
     sidebarOpen,
     setSidebarOpen,
     filteredProducts,
+    paginatedProducts,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    pageSize,
     activeFiltersCount,
     productsCountByCategory,
     categories,
