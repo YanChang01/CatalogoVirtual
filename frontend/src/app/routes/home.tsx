@@ -1,18 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { ChevronRight, Package, Shield, Truck, Star } from "lucide-react";
 import ContentLayout from "@/components/layouts/content-layout";
 import { StarRating } from "@/components/ui/star-rating";
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/components/products/product-card";
-import { ALL_PRODUCTS } from "@/data/products";
 import { HOME_CATEGORIES } from "@/data/categories";
 import { TESTIMONIALS } from "@/data/testimonials";
-
-const FEATURED_PRODUCTS = ALL_PRODUCTS.slice(0, 4);
+import { fetchFeaturedProducts } from "@/lib/api/products";
+import type { Product } from "@/types/product";
 
 export default function HomePage() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]);
+
+  useEffect(() => {
+    async function loadFeatured() {
+      try {
+        const products = await fetchFeaturedProducts(4);
+        setFeaturedProducts(products);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadFeatured();
+  }, []);
 
   const toggleWishlist = (id: number) =>
     setWishlist((prev) =>
@@ -143,16 +158,22 @@ export default function HomePage() {
               Ver catálogo <ChevronRight size={14} />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {FEATURED_PRODUCTS.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isWishlisted={wishlist.includes(product.id)}
-                onToggleWishlist={toggleWishlist}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <p className="text-muted-foreground">Cargando productos...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {featuredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  isWishlisted={wishlist.includes(product.id)}
+                  onToggleWishlist={toggleWishlist}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

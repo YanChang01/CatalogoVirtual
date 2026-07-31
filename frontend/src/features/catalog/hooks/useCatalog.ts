@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { fetchProducts, getCategoriesFromProducts, getMaterialsFromProducts, getProductsCountByCategory, type Product } from "@/lib/api/products";
+import { fetchProducts, getCategoriesFromProducts, getProductsCountByCategory, type Product } from "@/lib/api/products";
 
 export function useCatalog() {
   const [searchParams] = useSearchParams();
@@ -17,13 +17,7 @@ export function useCatalog() {
     }
     return [];
   });
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
-  const [minRating, setMinRating] = useState(0);
-  const [onSaleOnly, setOnSaleOnly] = useState(false);
-  const [newOnly, setNewOnly] = useState(
-    searchParams.get("filtro") === "nuevo",
-  );
   const [sort, setSort] = useState("popular");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [wishlist, setWishlist] = useState<number[]>([]);
@@ -64,18 +58,9 @@ export function useCatalog() {
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
     );
 
-  const toggleMaterial = (mat: string) =>
-    setSelectedMaterials((prev) =>
-      prev.includes(mat) ? prev.filter((m) => m !== mat) : [...prev, mat],
-    );
-
   const clearAll = () => {
     setSelectedCategories([]);
-    setSelectedMaterials([]);
     setPriceRange([0, 9999]);
-    setMinRating(0);
-    setOnSaleOnly(false);
-    setNewOnly(false);
     setSearch("");
   };
 
@@ -92,53 +77,37 @@ export function useCatalog() {
         !selectedCategories.includes(p.category)
       )
         return false;
-      if (
-        selectedMaterials.length > 0 &&
-        !selectedMaterials.includes(p.material ?? "")
-      )
-        return false;
       if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
-      if (p.rating < minRating) return false;
-      if (onSaleOnly && !p.onSale) return false;
-      if (newOnly && !p.isNew) return false;
       return true;
     });
 
     switch (sort) {
-      case "newest":
-        list = list.filter((p) => p.isNew).concat(list.filter((p) => !p.isNew));
-        break;
       case "price-asc":
         list = [...list].sort((a, b) => a.price - b.price);
         break;
       case "price-desc":
         list = [...list].sort((a, b) => b.price - a.price);
         break;
-      case "rating":
-        list = [...list].sort((a, b) => b.rating - a.rating);
+      case "newest":
+        list = [...list].sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
         break;
       default:
-        list = [...list].sort((a, b) => b.reviews - a.reviews);
+        list = [...list].sort((a, b) => b.price - a.price);
     }
     return list;
   }, [
     search,
     selectedCategories,
-    selectedMaterials,
     priceRange,
-    minRating,
-    onSaleOnly,
-    newOnly,
     sort,
     products,
   ]);
 
   const activeFiltersCount =
     selectedCategories.length +
-    selectedMaterials.length +
-    (onSaleOnly ? 1 : 0) +
-    (newOnly ? 1 : 0) +
-    (minRating > 0 ? 1 : 0) +
     (priceRange[0] > 0 || priceRange[1] < 9999 ? 1 : 0);
 
   const productsCountByCategory = useMemo(
@@ -151,11 +120,6 @@ export function useCatalog() {
     [products],
   );
 
-  const materials = useMemo(
-    () => getMaterialsFromProducts(products),
-    [products],
-  );
-
   return {
     loading,
     error,
@@ -163,20 +127,8 @@ export function useCatalog() {
     setSearch,
     selectedCategories,
     toggleCategory,
-    selectedMaterials,
-    toggleMaterial,
     priceRange,
     setPriceRange,
-    minRating,
-    setMinRating,
-    onSaleOnly,
-    setOnSaleOnly,
-    newOnly,
-    setNewOnly,
-    clearAll,
-    filteredProducts,
-    activeFiltersCount,
-    productsCountByCategory,
     sort,
     setSort,
     viewMode,
@@ -185,7 +137,10 @@ export function useCatalog() {
     toggleWishlist,
     sidebarOpen,
     setSidebarOpen,
+    filteredProducts,
+    activeFiltersCount,
+    productsCountByCategory,
     categories,
-    materials,
+    clearAll,
   };
 }

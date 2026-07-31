@@ -2,27 +2,17 @@ import { useState } from "react";
 import { Search, X, Check, ChevronUp, ChevronDown } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { StarRating } from "@/components/ui/star-rating";
 
 interface CatalogSidebarProps {
   search: string;
   setSearch: (val: string) => void;
   selectedCategories: string[];
   toggleCategory: (cat: string) => void;
-  selectedMaterials: string[];
-  toggleMaterial: (mat: string) => void;
   priceRange: [number, number];
   setPriceRange: (range: [number, number]) => void;
-  minRating: number;
-  setMinRating: (rating: number) => void;
-  onSaleOnly: boolean;
-  setOnSaleOnly: (val: boolean) => void;
-  newOnly: boolean;
-  setNewOnly: (val: boolean) => void;
   clearAll: () => void;
   activeFiltersCount: number;
   categories: string[];
-  materials: string[];
   productsCountByCategory: Record<string, number>;
 }
 
@@ -67,20 +57,11 @@ export function CatalogSidebar({
   setSearch,
   selectedCategories,
   toggleCategory,
-  selectedMaterials,
-  toggleMaterial,
   priceRange,
   setPriceRange,
-  minRating,
-  setMinRating,
-  onSaleOnly,
-  setOnSaleOnly,
-  newOnly,
-  setNewOnly,
   clearAll,
   activeFiltersCount,
   categories,
-  materials,
   productsCountByCategory,
 }: CatalogSidebarProps) {
   return (
@@ -234,106 +215,6 @@ export function CatalogSidebar({
           </div>
         </div>
       </FilterSection>
-
-      {/* Valoración */}
-      <FilterSection title="Valoración mínima">
-        <div className="flex flex-col gap-2">
-          {[4, 3, 2, 0].map((r) => (
-            <button
-              key={r}
-              onClick={() => setMinRating(r === minRating ? 0 : r)}
-              className="flex items-center gap-3 group"
-            >
-              <div
-                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${
-                  minRating === r && r > 0
-                    ? "bg-primary border-primary"
-                    : "border-border group-hover:border-muted-foreground"
-                }`}
-              >
-                {minRating === r && r > 0 && (
-                  <Check size={10} className="text-primary-foreground" />
-                )}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <StarRating rating={r || 1} size={11} />
-                <span className="text-xs text-muted-foreground">
-                  {r > 0 ? `${r}+ estrellas` : "Todos"}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Material */}
-      <FilterSection title="Material" defaultOpen={false}>
-        <div className="flex flex-col gap-2">
-          {materials.map((mat) => (
-            <button
-              key={mat}
-              onClick={() => toggleMaterial(mat)}
-              className="flex items-center gap-2.5 text-sm group"
-            >
-              <div
-                className={`w-4 h-4 border flex items-center justify-center shrink-0 transition-colors ${
-                  selectedMaterials.includes(mat)
-                    ? "bg-primary border-primary"
-                    : "border-border group-hover:border-muted-foreground"
-                }`}
-              >
-                {selectedMaterials.includes(mat) && (
-                  <Check size={10} className="text-primary-foreground" />
-                )}
-              </div>
-              <span
-                className={`text-sm transition-colors ${
-                  selectedMaterials.includes(mat)
-                    ? "text-foreground"
-                    : "text-muted-foreground group-hover:text-foreground"
-                }`}
-              >
-                {mat}
-              </span>
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Toggles */}
-      <div className="flex flex-col gap-3">
-        {[
-          { label: "En oferta", value: onSaleOnly, set: setOnSaleOnly },
-          { label: "Novedades", value: newOnly, set: setNewOnly },
-        ].map(({ label, value, set }) => (
-          <button
-            key={label}
-            onClick={() => set(!value)}
-            className="flex items-center justify-between group"
-          >
-            <span
-              className={`text-sm transition-colors ${
-                value
-                  ? "text-foreground"
-                  : "text-muted-foreground group-hover:text-foreground"
-              }`}
-            >
-              {label}
-            </span>
-            <div
-              className={`w-9 h-5 relative transition-colors ${
-                value ? "bg-primary" : "bg-muted"
-              }`}
-            >
-              <div
-                className={`absolute top-0.5 w-4 h-4 bg-foreground transition-transform ${
-                  value ? "translate-x-4" : "translate-x-0.5"
-                }`}
-              />
-            </div>
-          </button>
-        ))}
-      </div>
     </aside>
   );
 }

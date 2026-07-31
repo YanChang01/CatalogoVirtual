@@ -13,20 +13,8 @@ export default function Catalog() {
     setSearch,
     selectedCategories,
     toggleCategory,
-    selectedMaterials,
-    toggleMaterial,
     priceRange,
     setPriceRange,
-    minRating,
-    setMinRating,
-    onSaleOnly,
-    setOnSaleOnly,
-    newOnly,
-    setNewOnly,
-    clearAll,
-    filteredProducts,
-    activeFiltersCount,
-    productsCountByCategory,
     sort,
     setSort,
     viewMode,
@@ -35,9 +23,12 @@ export default function Catalog() {
     toggleWishlist,
     sidebarOpen,
     setSidebarOpen,
+    filteredProducts,
+    activeFiltersCount,
+    productsCountByCategory,
     categories,
-    materials,
     loading,
+    clearAll,
   } = useCatalog();
 
   return (
@@ -48,17 +39,9 @@ export default function Catalog() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
           <ActiveFilterChips
             selectedCategories={selectedCategories}
-            selectedMaterials={selectedMaterials}
-            onSaleOnly={onSaleOnly}
-            newOnly={newOnly}
-            minRating={minRating}
             priceRange={priceRange}
             onRemoveCategory={toggleCategory}
-            onRemoveMaterial={toggleMaterial}
-            onToggleOnSaleOnly={() => setOnSaleOnly(!onSaleOnly)}
-            onToggleNewOnly={() => setNewOnly(!newOnly)}
             onClearAll={clearAll}
-            onSetMinRating={setMinRating}
             onSetPriceRange={setPriceRange}
           />
 
@@ -70,20 +53,11 @@ export default function Catalog() {
                 setSearch={setSearch}
                 selectedCategories={selectedCategories}
                 toggleCategory={toggleCategory}
-                selectedMaterials={selectedMaterials}
-                toggleMaterial={toggleMaterial}
                 priceRange={priceRange}
                 setPriceRange={setPriceRange}
-                minRating={minRating}
-                setMinRating={setMinRating}
-                onSaleOnly={onSaleOnly}
-                setOnSaleOnly={setOnSaleOnly}
-                newOnly={newOnly}
-                setNewOnly={setNewOnly}
                 clearAll={clearAll}
                 activeFiltersCount={activeFiltersCount}
                 categories={categories}
-                materials={materials}
                 productsCountByCategory={productsCountByCategory}
               />
             </div>
@@ -105,20 +79,11 @@ export default function Catalog() {
                     setSearch={setSearch}
                     selectedCategories={selectedCategories}
                     toggleCategory={toggleCategory}
-                    selectedMaterials={selectedMaterials}
-                    toggleMaterial={toggleMaterial}
                     priceRange={priceRange}
                     setPriceRange={setPriceRange}
-                    minRating={minRating}
-                    setMinRating={setMinRating}
-                    onSaleOnly={onSaleOnly}
-                    setOnSaleOnly={setOnSaleOnly}
-                    newOnly={newOnly}
-                    setNewOnly={setNewOnly}
                     clearAll={clearAll}
                     activeFiltersCount={activeFiltersCount}
                     categories={categories}
-                    materials={materials}
                     productsCountByCategory={productsCountByCategory}
                   />
                 }

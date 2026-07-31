@@ -1,15 +1,25 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { MessageCircle, ChevronLeft } from "lucide-react";
-import { StarRating } from "@/components/ui/star-rating";
 import { WHATSAPP_NUMBER } from "@/config/constants";
 import { fetchProductByName } from "@/lib/api/products";
 import ContentLayout from "@/components/layouts/content-layout";
 
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  description: string | null;
+  imageUrl: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function ProductDetail() {
   const { productName } = useParams();
   const name = productName ? decodeURIComponent(productName) : "";
-  const [selectedImage, setSelectedImage] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,13 +84,6 @@ export default function ProductDetail() {
     );
   }
 
-  const images = [
-    product.img,
-    "photo-1653974123568-b5eff6d851e1",
-    "photo-1695048367315-3d4bcd9c5df4",
-    "photo-1772987714654-2df39af2c658",
-  ];
-
   return (
     <ContentLayout>
       <div className="min-h-screen bg-background">
@@ -89,42 +92,22 @@ export default function ProductDetail() {
             {/* Gallery */}
             <div className="space-y-4 min-w-0">
               <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-                <img
-                  src={`https://images.unsplash.com/${images[selectedImage]}?w=800&h=800&fit=crop&auto=format`}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-                {product.badge && (
-                  <span className="absolute top-4 left-4 bg-primary text-primary-foreground text-[9px] tracking-widest uppercase px-2.5 py-1">
-                    {product.badge}
+                {product.imageUrl ? (
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    Sin imagen
+                  </div>
+                )}
+                {!product.isActive && (
+                  <span className="absolute top-4 left-4 bg-muted/90 text-foreground text-[9px] tracking-widest uppercase px-2.5 py-1 border border-border">
+                    No disponible
                   </span>
                 )}
-                {product.onSale && !product.badge && (
-                  <span className="absolute top-4 left-4 bg-card/90 text-foreground text-[9px] tracking-widest uppercase px-2.5 py-1 border border-border">
-                    Oferta
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {images.map((img, i) => (
-                  <button
-                    key={img}
-                    onClick={() => setSelectedImage(i)}
-                    className={`relative shrink-0 w-20 h-20 min-w-[80px] rounded-md overflow-hidden border-2 transition-colors ${
-                      selectedImage === i
-                        ? "border-primary"
-                        : "border-transparent hover:border-muted-foreground/50"
-                    }`}
-                    aria-label={`Ver imagen ${i + 1}`}
-                    aria-current={selectedImage === i}
-                  >
-                    <img
-                      src={`https://images.unsplash.com/${img}?w=200&h=200&fit=crop&auto=format`}
-                      alt={`${product.name} - vista ${i + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
               </div>
             </div>
 
@@ -132,7 +115,7 @@ export default function ProductDetail() {
             <div className="space-y-6 min-w-0">
               <div>
                 <p className="text-xs text-primary tracking-widest uppercase mb-2">
-                  {product.category} / {product.subcategory}
+                  {product.category}
                 </p>
                 <h1
                   className="text-3xl md:text-4xl text-foreground leading-tight"
@@ -142,36 +125,22 @@ export default function ProductDetail() {
                 </h1>
               </div>
 
-              <div className="flex items-center gap-3">
-                <StarRating rating={product.rating} size={16} />
-                <span className="text-sm text-muted-foreground">
-                  {product.rating.toFixed(1)} ({product.reviews} reseñas)
-                </span>
-              </div>
-
               <div className="flex items-baseline gap-4">
                 <span className="text-3xl font-medium text-foreground">
                   ${product.price.toFixed(2)}
                 </span>
-                {product.originalPrice && (
+                {!product.isActive && (
                   <span className="text-xl text-muted-foreground line-through">
-                    ${product.originalPrice.toFixed(2)}
-                  </span>
-                )}
-                {product.onSale && product.originalPrice && (
-                  <span className="bg-destructive/10 text-destructive text-xs tracking-widest uppercase px-2 py-1 rounded">
-                    -
-                    {Math.round(
-                      (1 - product.price / product.originalPrice!) * 100,
-                    )}
-                    %
+                    No disponible
                   </span>
                 )}
               </div>
 
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {product.material}
-              </p>
+              {product.description && (
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {product.description}
+                </p>
+              )}
 
               <div className="pt-6">
                 <a
@@ -186,52 +155,59 @@ export default function ProductDetail() {
                   Contactar por WhatsApp
                 </a>
               </div>
-            </div>
-          </div>
 
-          {/* Details Tabs */}
-          <div className="mt-16 border-t border-border pt-10">
-            <div className="max-w-4xl mx-auto">
-              <h2
-                className="text-2xl text-foreground mb-6"
-                style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
-              >
-                Detalles del producto
-              </h2>
-              <div className="prose prose-muted max-w-none">
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  {product.name} es un producto de bienestar íntimo de alta
-                  calidad, diseñado con materiales{" "}
-                  {product.material?.toLowerCase() || "premium"} y pensado para
-                  ofrecer la mejor experiencia. Cada detalle ha sido
-                  cuidadosamente seleccionado para garantizar tu comodidad y
-                  satisfacción.
-                </p>
-                <h3 className="text-lg font-medium text-foreground mb-3">
-                  Características principales
-                </h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-6">
-                  <li>Material: {product.material ?? "—"}</li>
-                  <li>Categoría: {product.category}</li>
-                  <li>Subcategoría: {product.subcategory ?? "—"}</li>
-                  {product.originalPrice && (
-                    <li>
-                      Precio original: ${product.originalPrice.toFixed(2)}
-                    </li>
+              {/* Details */}
+              <div className="mt-12 border-t border-border pt-8">
+                <h2
+                  className="text-xl text-foreground mb-4"
+                  style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+                >
+                  Detalles del producto
+                </h2>
+                <div className="prose prose-muted max-w-none">
+                  {product.description ? (
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      {product.description}
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      Información detallada no disponible para este producto.
+                    </p>
                   )}
-                  {product.onSale && <li>En oferta: Sí</li>}
-                  {product.isNew && <li>Novedad: Sí</li>}
-                </ul>
-                <h3 className="text-lg font-medium text-foreground mb-3">
-                  Cuidados y uso
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Para mantener tu producto en óptimas condiciones, límpialo
-                  antes y después de cada uso con agua tibia y jabón neutro o un
-                  limpiador específico para juguetes. Guárdalo en un lugar
-                  fresco y seco, preferiblemente en su bolsa original, y evita
-                  el contacto con otros materiales de silicona.
-                </p>
+                  <h3 className="text-lg font-medium text-foreground mb-3">
+                    Información adicional
+                  </h3>
+                  <dl className="space-y-2 text-muted-foreground">
+                    <div className="flex gap-4">
+                      <dt className="font-medium min-w-[120px]">Categoría:</dt>
+                      <dd>{product.category}</dd>
+                    </div>
+                    <div className="flex gap-4">
+                      <dt className="font-medium min-w-[120px]">Estado:</dt>
+                      <dd>{product.isActive ? "Disponible" : "No disponible"}</dd>
+                    </div>
+                    <div className="flex gap-4">
+                      <dt className="font-medium min-w-[120px]">Creado:</dt>
+                      <dd>
+                        {new Date(product.createdAt).toLocaleDateString("es-ES", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </dd>
+                    </div>
+                    <div className="flex gap-4">
+                      <dt className="font-medium min-w-[120px]">Actualizado:</dt>
+                      <dd>
+                        {new Date(product.updatedAt).toLocaleDateString("es-ES", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
@@ -239,20 +215,4 @@ export default function ProductDetail() {
       </div>
     </ContentLayout>
   );
-}
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  subcategory?: string;
-  price: number;
-  originalPrice: number | null;
-  rating: number;
-  reviews: number;
-  badge: string | null;
-  img: string;
-  material?: string;
-  isNew?: boolean;
-  onSale?: boolean;
 }
