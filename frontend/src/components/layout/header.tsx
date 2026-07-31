@@ -2,11 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { Search, MessageCircle, Menu, X } from "lucide-react";
 import { WHATSAPP_NUMBER } from "@/config/constants";
-import { NAV_LINKS } from "@/data/navigation";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  // const location = useLocation();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
@@ -23,18 +21,6 @@ export default function Header() {
             <span className="text-primary">Sex</span>Shop
           </span>
         </Link>
-
-        <nav className="hidden md:flex items-center gap-7">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              to={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
 
         <div className="flex items-center gap-4">
           <Link
@@ -71,16 +57,13 @@ export default function Header() {
 
       {menuOpen && (
         <div className="md:hidden bg-card border-t border-border px-6 py-4 flex flex-col gap-4">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              to={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+          <Link
+            to="/catalogo"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+            onClick={() => setMenuOpen(false)}
+          >
+            Catálogo
+          </Link>
         </div>
       )}
     </header>
