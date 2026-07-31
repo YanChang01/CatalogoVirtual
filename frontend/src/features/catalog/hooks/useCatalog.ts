@@ -18,9 +18,8 @@ export function useCatalog() {
     return [];
   });
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 9999]);
-  const [sort, setSort] = useState("popular");
+  const [sort, setSort] = useState("newest");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [wishlist, setWishlist] = useState<number[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -47,11 +46,6 @@ export function useCatalog() {
       mounted = false;
     };
   }, []);
-
-  const toggleWishlist = (id: number) =>
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
-    );
 
   const toggleCategory = (cat: string) =>
     setSelectedCategories((prev) =>
@@ -133,8 +127,6 @@ export function useCatalog() {
     setSort,
     viewMode,
     setViewMode,
-    wishlist,
-    toggleWishlist,
     sidebarOpen,
     setSidebarOpen,
     filteredProducts,

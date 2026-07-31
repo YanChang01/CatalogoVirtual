@@ -19,8 +19,6 @@ export default function Catalog() {
     setSort,
     viewMode,
     setViewMode,
-    wishlist,
-    toggleWishlist,
     sidebarOpen,
     setSidebarOpen,
     filteredProducts,
@@ -99,8 +97,6 @@ export default function Catalog() {
                 <CatalogProductGrid
                   products={filteredProducts}
                   viewMode={viewMode}
-                  wishlist={wishlist}
-                  onToggleWishlist={toggleWishlist}
                 />
               )}
 

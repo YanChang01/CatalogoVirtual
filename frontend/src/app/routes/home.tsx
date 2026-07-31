@@ -13,7 +13,6 @@ import type { Product } from "@/types/product";
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [wishlist, setWishlist] = useState<number[]>([]);
 
   useEffect(() => {
     async function loadFeatured() {
@@ -28,11 +27,6 @@ export default function HomePage() {
     }
     loadFeatured();
   }, []);
-
-  const toggleWishlist = (id: number) =>
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
-    );
 
   return (
     <ContentLayout>
@@ -165,12 +159,7 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {featuredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  isWishlisted={wishlist.includes(product.id)}
-                  onToggleWishlist={toggleWishlist}
-                />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}

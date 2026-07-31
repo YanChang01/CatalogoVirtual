@@ -1,4 +1,4 @@
-import { Heart, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Link } from "react-router";
 import { routes } from "@/config/routes";
 import { WHATSAPP_NUMBER } from "@/config/constants";
@@ -7,15 +7,11 @@ import type { Product } from "@/types/product";
 interface ProductCardProps {
   product: Product;
   view?: "grid" | "list";
-  onToggleWishlist: (id: number) => void;
-  isWishlisted: boolean;
 }
 
 export function ProductCard({
   product,
   view = "grid",
-  onToggleWishlist,
-  isWishlisted,
 }: ProductCardProps) {
   const productPath = routes.product.link(product.name);
   const imageSrc = product.imageUrl
@@ -52,11 +48,6 @@ export function ProductCard({
               {product.name}
             </h3>
           </Link>
-          {product.description && (
-            <p className="text-xs text-muted-foreground mb-auto line-clamp-2">
-              {product.description}
-            </p>
-          )}
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
               <span className="text-base font-medium text-foreground">
@@ -69,17 +60,6 @@ export function ProductCard({
               )}
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => onToggleWishlist(product.id)}
-                className="w-8 h-8 border border-border flex items-center justify-center hover:border-primary/50 transition-colors"
-                aria-label="Favorito"
-              >
-                <Heart
-                  size={13}
-                  fill={isWishlisted ? "#c4355a" : "none"}
-                  stroke={isWishlisted ? "#c4355a" : "#f0ebe3"}
-                />
-              </button>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
                   `Hola, me interesa el producto: ${product.name}`,
@@ -116,17 +96,6 @@ export function ProductCard({
             No disponible
           </span>
         )}
-        <button
-          onClick={() => onToggleWishlist(product.id)}
-          className="absolute top-3 right-3 w-8 h-8 bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-card"
-          aria-label="Favorito"
-        >
-          <Heart
-            size={13}
-            fill={isWishlisted ? "#c4355a" : "none"}
-            stroke={isWishlisted ? "#c4355a" : "#f0ebe3"}
-          />
-        </button>
       </div>
       <div className="p-4 flex flex-col flex-1">
         <p className="text-[10px] text-primary tracking-widest uppercase mb-1">
