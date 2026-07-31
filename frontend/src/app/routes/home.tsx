@@ -5,27 +5,39 @@ import ContentLayout from "@/components/layouts/content-layout";
 import { StarRating } from "@/components/ui/star-rating";
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/components/products/product-card";
-import { HOME_CATEGORIES } from "@/data/categories";
 import { TESTIMONIALS } from "@/data/testimonials";
-import { fetchFeaturedProducts } from "@/lib/api/products";
+import { fetchFeaturedProducts, fetchCategoriesWithCounts, type CategoryWithCount } from "@/lib/api/products";
 import type { Product } from "@/types/product";
+
+const CATEGORY_GRADIENTS = [
+  "bg-gradient-to-br from-rose-500/20 to-orange-500/10",
+  "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/10",
+  "bg-gradient-to-br from-sky-500/20 to-indigo-500/10",
+  "bg-gradient-to-br from-emerald-500/20 to-teal-500/10",
+  "bg-gradient-to-br from-amber-500/20 to-yellow-500/10",
+];
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryWithCount[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadFeatured() {
+    async function loadData() {
       try {
-        const products = await fetchFeaturedProducts(4);
+        const [products, cats] = await Promise.all([
+          fetchFeaturedProducts(4),
+          fetchCategoriesWithCounts(),
+        ]);
         setFeaturedProducts(products);
+        setCategories(cats);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
-    loadFeatured();
+    loadData();
   }, []);
 
   return (
@@ -113,31 +125,41 @@ export default function HomePage() {
             Ver todo <ChevronRight size={14} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-3 h-[520px] md:h-[600px]">
-          {HOME_CATEGORIES.map((cat, i) => (
-            <Link
-              key={cat.name}
-              to={`/catalogo?categoria=${cat.name.toLowerCase()}`}
-              className={`relative group overflow-hidden bg-card ${i === 0 ? "col-span-2 row-span-2" : ""}`}
-            >
-              <img
-                src={`https://images.unsplash.com/${cat.img}?w=800&h=800&fit=crop&auto=format`}
-                alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-65 group-hover:scale-105 transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5">
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-3 h-[520px] md:h-[600px]">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className={`relative group overflow-hidden bg-card animate-pulse ${i === 0 ? "col-span-2 row-span-2" : ""}`}
+              >
+                <div className="absolute inset-0 bg-muted" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-3 h-[520px] md:h-[600px]">
+            {categories.map((cat, i) => (
+              <Link
+                key={cat.name}
+                to={`/catalogo?categoria=${encodeURIComponent(cat.name.toLowerCase())}`}
+                className={`group relative overflow-hidden flex flex-col justify-end p-5 md:p-8 transition-colors duration-300 ${
+                  CATEGORY_GRADIENTS[i % CATEGORY_GRADIENTS.length]
+                } ${i === 0 ? "col-span-2 row-span-2" : ""}`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <p
-                  className={`text-foreground font-medium leading-tight mb-1 ${i === 0 ? "text-2xl md:text-3xl" : "text-base md:text-lg"}`}
+                  className={`relative text-foreground font-medium leading-tight mb-1 ${i === 0 ? "text-3xl md:text-4xl" : "text-xl md:text-2xl"}`}
                   style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
                 >
                   {cat.name}
                 </p>
-                <p className="text-muted-foreground text-xs">{cat.count}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+                <p className="relative text-muted-foreground text-xs tracking-wider uppercase">
+                  {cat.count} {cat.count === 1 ? "producto" : "productos"}
+                </p>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* PRODUCTOS DESTACADOS */}
