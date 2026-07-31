@@ -92,3 +92,27 @@ export function getProductsCountByCategory(products: Product[]): Record<string, 
   });
   return counts;
 }
+
+export interface CategoryWithCount {
+  name: string;
+  count: number;
+}
+
+export async function fetchCategoriesWithCounts(): Promise<CategoryWithCount[]> {
+  const [products, categoryMap] = await Promise.all([
+    fetchProducts(),
+    fetchCategories(),
+  ]);
+
+  const counts = getProductsCountByCategory(products);
+  const categories: CategoryWithCount[] = [];
+
+  for (const [, name] of categoryMap.entries()) {
+    const count = counts[name] ?? 0;
+    if (count > 0) {
+      categories.push({ name, count });
+    }
+  }
+
+  return categories.sort((a, b) => b.count - a.count);
+}

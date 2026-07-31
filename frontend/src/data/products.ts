@@ -3,11 +3,3 @@ export const SORT_OPTIONS = [
   { value: "price-asc", label: "Precio: menor a mayor" },
   { value: "price-desc", label: "Precio: mayor a menor" },
 ];
-
-export const CATEGORIES = [
-  "Vibradores",
-  "Parejas",
-  "BDSM",
-  "Lubricantes",
-  "Accesorios",
-];
