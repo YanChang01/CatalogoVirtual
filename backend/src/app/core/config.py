@@ -6,7 +6,6 @@ from pydantic import BaseModel
 load_dotenv()
 
 #Seguridad.
-CRYPTOGRAPHY = getenv("CRYPTOGRAPHY")
 ALGORITHM = getenv("ALGORITHM")
 SECRET = getenv("SECRET")
 ACCESS_TOKEN_DURATION = getenv("ACCESS_TOKEN_DURATION")
@@ -20,7 +19,6 @@ class Setting(BaseModel):
     PROJECT_DESCRIPTION: str = "Esta es una web diseñada como catálogo virtual para un negocio de ventas de Sex Toys"
     PROJECT_VERSION: str = "1.0.0"
     DATABASE_URL: str = DATABASE_URL
-    CRYPTOGRAPHY: str = CRYPTOGRAPHY
     ALGORITHM: str = ALGORITHM
     SECRET: str = SECRET
     ACCESS_TOKEN_DURATION: int = int(ACCESS_TOKEN_DURATION)
