@@ -1,0 +1,21 @@
+import { defineConfig } from '@hey-api/openapi-ts';
+
+export default defineConfig({
+  input: 'http://127.0.0.1:8000/openapi.json',
+  output: {
+    path: 'src/lib/api',
+    format: 'prettier',
+  },
+  client: 'axios',
+  plugins: [
+    {
+      name: '@hey-api/client-axios',
+    },
+    {
+      name: '@hey-api/typescript',
+    },
+    {
+      name: '@hey-api/schemas',
+    },
+  ],
+});

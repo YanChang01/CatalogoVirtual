@@ -1,19 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ShoppingBag, Search, Menu, X } from "lucide-react";
-
-const NAV_LINKS = [
-  { label: "Novedades", href: "/catalogo?filtro=nuevo" },
-  { label: "Vibradores", href: "/catalogo?categoria=vibradores" },
-  { label: "Parejas", href: "/catalogo?categoria=parejas" },
-  { label: "BDSM", href: "/catalogo?categoria=bdsm" },
-  { label: "Lubricantes", href: "/catalogo?categoria=lubricantes" },
-  { label: "Accesorios", href: "/catalogo?categoria=accesorios" },
-];
+import { Search, MessageCircle, Menu, X } from "lucide-react";
+import { WHATSAPP_NUMBER } from "@/config/constants";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  // const location = useLocation();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
@@ -31,35 +22,29 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              to={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
         <div className="flex items-center gap-4">
           <Link
             to="/catalogo"
-            className="hidden md:flex text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Buscar"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Catálogo"
           >
             <Search size={18} />
-          </Link>
-          <button
-            className="relative text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Carrito"
-          >
-            <ShoppingBag size={18} />
-            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] flex items-center justify-center font-medium">
-              2
+            <span className="hidden sm:inline text-sm tracking-widest uppercase">
+              Catálogo
             </span>
-          </button>
+          </Link>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+            aria-label="Contactar por WhatsApp"
+          >
+            <MessageCircle size={18} />
+            <span className="hidden sm:inline text-sm tracking-widest uppercase">
+              WhatsApp
+            </span>
+          </a>
           <button
             className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -72,16 +57,13 @@ export default function Header() {
 
       {menuOpen && (
         <div className="md:hidden bg-card border-t border-border px-6 py-4 flex flex-col gap-4">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              to={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+          <Link
+            to="/catalogo"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+            onClick={() => setMenuOpen(false)}
+          >
+            Catálogo
+          </Link>
         </div>
       )}
     </header>
