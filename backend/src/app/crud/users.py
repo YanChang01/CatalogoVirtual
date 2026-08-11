@@ -1,14 +1,43 @@
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from typing import Optional, List
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select, update, delete, func, and_, or_, not_
 from datetime import datetime, timezone, timedelta
+from jose.jwt import encode
 
 from models.models import User
 from schemas.schemas import UserCreate, UserResponse, UserUpdate
-from core.security import password_hash, verify_password
+from core.security import password_hash, verify_password, get_current_user
+from core.config import settings
 
+#Login
+async def login(form: OAuth2PasswordRequestForm, session: AsyncSession) -> dict:
+    query = await session.exec(select(User).where(User.email == form.username))
+    db_user: User = query.first()
+    
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Username {form.username} inválido")
+
+    if not verify_password(form.password, db_user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Password {form.password} inválido")
+    
+    #Construir el access_token
+    access_token: dict = {
+        "sub": db_user.email,
+        "name": db_user.fullname,
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_DURATION)
+    }
+    
+    #JWT
+    jwt_access: dict = {
+        "token": encode(claims=access_token, key=settings.SECRET, algorithm=settings.ALGORITHM),
+        "token_type": "bearer"
+    }
+    
+    return jwt_access
+    
 #Create
 async def create_user(user: UserCreate, session: AsyncSession) -> User:
     #Validar unicidad del phone y el email
