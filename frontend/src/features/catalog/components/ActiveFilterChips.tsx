@@ -1,0 +1,50 @@
+import { X } from "lucide-react";
+
+interface ActiveFilterChipsProps {
+  selectedCategories: string[];
+  priceRange: [number, number];
+  onRemoveCategory: (cat: string) => void;
+  onClearAll: () => void;
+  onSetPriceRange: (range: [number, number]) => void;
+}
+
+export function ActiveFilterChips({
+  selectedCategories,
+  priceRange,
+  onRemoveCategory,
+  onClearAll,
+  onSetPriceRange,
+}: ActiveFilterChipsProps) {
+  const hasActiveFilters =
+    selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 9999;
+
+  if (!hasActiveFilters) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2 mb-6">
+      {selectedCategories.map((c) => (
+        <button
+          key={c}
+          onClick={() => onRemoveCategory(c)}
+          className="flex items-center gap-1.5 text-xs border border-primary/40 text-primary px-3 py-1.5 hover:bg-primary/10 transition-colors"
+        >
+          {c} <X size={10} />
+        </button>
+      ))}
+      {(priceRange[0] > 0 || priceRange[1] < 9999) && (
+        <button
+          onClick={() => onSetPriceRange([0, 9999])}
+          className="flex items-center gap-1.5 text-xs border border-primary/40 text-primary px-3 py-1.5 hover:bg-primary/10 transition-colors"
+        >
+          ${priceRange[0]} – ${priceRange[1]} <X size={10} />
+        </button>
+      )}
+      <button
+        onClick={onClearAll}
+        className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5"
+      >
+        Limpiar todo
+      </button>
+    </div>
+  );
+}
