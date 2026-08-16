@@ -5,6 +5,36 @@ export type ClientOptions = {
 };
 
 /**
+ * Body_iniciar_session_users_login_post
+ */
+export type BodyIniciarSessionUsersLoginPost = {
+  /**
+   * Grant Type
+   */
+  grant_type?: string | null;
+  /**
+   * Username
+   */
+  username: string;
+  /**
+   * Password
+   */
+  password: string;
+  /**
+   * Scope
+   */
+  scope?: string;
+  /**
+   * Client Id
+   */
+  client_id?: string | null;
+  /**
+   * Client Secret
+   */
+  client_secret?: string | null;
+};
+
+/**
  * CategoryCreate
  */
 export type CategoryCreate = {
@@ -267,6 +297,64 @@ export type ValidationError = {
     [key: string]: unknown;
   };
 };
+
+export type RegisterUsersRegisterPostData = {
+  body: UserCreate;
+  path?: never;
+  query?: never;
+  url: "/users/register";
+};
+
+export type RegisterUsersRegisterPostErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type RegisterUsersRegisterPostError =
+  RegisterUsersRegisterPostErrors[keyof RegisterUsersRegisterPostErrors];
+
+export type RegisterUsersRegisterPostResponses = {
+  /**
+   * Successful Response
+   */
+  201: UserResponse;
+};
+
+export type RegisterUsersRegisterPostResponse =
+  RegisterUsersRegisterPostResponses[keyof RegisterUsersRegisterPostResponses];
+
+export type IniciarSessionUsersLoginPostData = {
+  body: BodyIniciarSessionUsersLoginPost;
+  path?: never;
+  query?: never;
+  url: "/users/login";
+};
+
+export type IniciarSessionUsersLoginPostErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type IniciarSessionUsersLoginPostError =
+  IniciarSessionUsersLoginPostErrors[keyof IniciarSessionUsersLoginPostErrors];
+
+export type IniciarSessionUsersLoginPostResponses = {
+  /**
+   * Response Iniciar Session Users Login Post
+   *
+   * Successful Response
+   */
+  201: {
+    [key: string]: unknown;
+  };
+};
+
+export type IniciarSessionUsersLoginPostResponse =
+  IniciarSessionUsersLoginPostResponses[keyof IniciarSessionUsersLoginPostResponses];
 
 export type CreateUsersCreatePostData = {
   body: UserCreate;
