@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ChevronRight, Package, Shield, Truck } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 export function HomeHero() {
   return (
@@ -33,20 +33,6 @@ export function HomeHero() {
           >
             Ver Categorías
           </a>
-        </div>
-        <div className="mt-16 flex flex-wrap gap-6">
-          {[
-            { icon: Package, label: "Envío discreto" },
-            { icon: Shield, label: "Materiales seguros" },
-            { icon: Truck, label: "48h garantizado" },
-          ].map(({ icon: Icon, label }) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 text-muted-foreground text-xs tracking-wide"
-            >
-              <Icon size={14} className="text-primary" /> {label}
-            </div>
-          ))}
         </div>
       </div>
       <div className="relative min-h-[50vh] lg:min-h-0 bg-muted overflow-hidden">

@@ -1,7 +1,6 @@
 import { HomeHero } from "@/features/home/components/HomeHero";
 import { HomeCategories } from "@/features/home/components/HomeCategories";
 import { HomeFeaturedProducts } from "@/features/home/components/HomeFeaturedProducts";
-import { HomePromise } from "@/features/home/components/HomePromise";
 import ContentLayout from "@/components/layouts/content-layout";
 import { useHomeCategories } from "@/features/home/hooks/useHomeCategories";
 import { useHomeProducts } from "@/features/home/hooks/useHomeProducts";
@@ -15,7 +14,6 @@ export default function HomePage() {
       <HomeHero />
       <HomeCategories categories={categories} loading={categoriesLoading} />
       <HomeFeaturedProducts products={products} loading={productsLoading} />
-      <HomePromise />
     </ContentLayout>
   );
 }
