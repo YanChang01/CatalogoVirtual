@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router";
-import { Eye, EyeOff, Lock, Mail, ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router";
+import { Link, ChevronLeft } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import ContentLayout from "@/components/layouts/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { routes } from "@/config/routes";
+import { useAuth } from "@/lib/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +14,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const { login, user } = useAuth();
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -28,9 +33,19 @@ export default function LoginPage() {
     e.preventDefault();
     if (!validate()) return;
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setIsLoading(false);
+    try {
+      await login({ username: email, password });
+      navigate(routes.home.path);
+    } catch (err) {
+      setErrors({ general: (err as Error).message });
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (user.token) {
+    navigate(routes.home.path);
+  }
 
   return (
     <ContentLayout>
@@ -109,6 +124,9 @@ export default function LoginPage() {
               >
                 {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>
+              {errors.general && (
+                <p className="mt-2 text-sm text-destructive">{errors.general}</p>
+              )}
             </div>
           </form>
         </div>
