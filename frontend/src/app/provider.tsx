@@ -1,7 +1,7 @@
 import MainErrorFallback from "@/components/errors/main-error-fallback";
 import { ErrorBoundary } from "react-error-boundary";
 import * as React from "react";
-import { AuthProvider } from "@/lib/auth-provider";
+import { AuthProvider } from "@/features/auth/provider";
 
 interface AppProviderProps {
   children: React.ReactNode;

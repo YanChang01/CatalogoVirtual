@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { client } from "@/lib/api/client.gen";
 import { routes } from "@/config/routes";
-import { AuthContext } from "@/lib/auth-context";
+import { AuthContext } from "@/features/auth/context";
 
 function getInitialToken(): string | null {
   return localStorage.getItem("token_jwt");
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error((data as { detail?: string }).detail || "Login failed");
     }
 
-    const accessToken = (data as { access_token?: string; token?: string; accessToken?: string }).access_token 
+    const accessToken = (data as { access_token?: string; token?: string; accessToken?: string }).access_token
       ?? (data as { access_token?: string; token?: string; accessToken?: string }).token
       ?? (data as { access_token?: string; token?: string; accessToken?: string }).accessToken;
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { Search, MessageCircle, Menu, X, LogOut } from "lucide-react";
 import { WHATSAPP_NUMBER } from "@/config/constants";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/useAuth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);

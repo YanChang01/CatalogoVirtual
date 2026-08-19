@@ -6,7 +6,7 @@ import ContentLayout from "@/components/layouts/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { routes } from "@/config/routes";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/useAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
