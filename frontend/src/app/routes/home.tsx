@@ -8,6 +8,7 @@ import { useHomeData } from "@/features/home/hooks/useHomeData";
 
 export default function HomePage() {
   const { categories, featuredProducts, loading } = useHomeData();
+
   return (
     <ContentLayout>
       <HomeHero />

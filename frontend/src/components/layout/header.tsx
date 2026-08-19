@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Search, MessageCircle, Menu, X } from "lucide-react";
+import { Search, MessageCircle, Menu, X, LogOut } from "lucide-react";
 import { WHATSAPP_NUMBER } from "@/config/constants";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
@@ -45,6 +47,18 @@ export default function Header() {
               WhatsApp
             </span>
           </a>
+          {isAuthenticated && (
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Cerrar sesión"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline text-sm tracking-widest uppercase">
+                Salir
+              </span>
+            </button>
+          )}
           <button
             className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -64,6 +78,17 @@ export default function Header() {
           >
             Catálogo
           </Link>
+          {isAuthenticated && (
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                logout();
+              }}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1 text-left"
+            >
+              Cerrar sesión
+            </button>
+          )}
         </div>
       )}
     </header>

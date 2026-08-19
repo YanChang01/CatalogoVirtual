@@ -1,6 +1,7 @@
 import MainErrorFallback from "@/components/errors/main-error-fallback";
 import { ErrorBoundary } from "react-error-boundary";
 import * as React from "react";
+import { AuthProvider } from "@/lib/auth-provider";
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -16,7 +17,9 @@ export default function AppProvider({ children }: AppProviderProps) {
       }
     >
       <ErrorBoundary FallbackComponent={MainErrorFallback}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </ErrorBoundary>
     </React.Suspense>
   );

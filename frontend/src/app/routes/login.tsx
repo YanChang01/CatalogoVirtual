@@ -6,7 +6,7 @@ import ContentLayout from "@/components/layouts/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { routes } from "@/config/routes";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,8 +15,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  const { login, user } = useAuth();
+  const { login } = useAuth();
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -42,10 +41,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
-  if (user.token) {
-    navigate(routes.home.path);
-  }
 
   return (
     <ContentLayout>
