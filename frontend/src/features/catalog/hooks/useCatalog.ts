@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { fetchProducts, getCategoriesFromProducts, getProductsCountByCategory, type Product } from "@/lib/api/products";
+import { fetchProducts } from "@/api/products";
+import { getCategoriesFromProducts, getProductsCountByCategory } from "@/utils/products";
+import type { Product } from "@/types/product";
 
 export function useCatalog() {
   const [searchParams] = useSearchParams();

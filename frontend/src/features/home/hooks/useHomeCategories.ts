@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { fetchCategoriesWithCounts, type CategoryWithCount } from "@/lib/api/products";
-import { fetchFeaturedProducts, type Product } from "@/lib/api/products";
+import { fetchCategoriesWithCounts } from "@/features/home/api/categories";
+import type { CategoryWithCount } from "@/types/product";
 
-export function useHomeData() {
+export function useHomeCategories() {
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,13 +11,9 @@ export function useHomeData() {
 
     async function loadData() {
       try {
-        const [cats, products] = await Promise.all([
-          fetchCategoriesWithCounts(),
-          fetchFeaturedProducts(4),
-        ]);
+        const cats = await fetchCategoriesWithCounts();
         if (mounted) {
           setCategories(cats);
-          setFeaturedProducts(products);
         }
       } catch (err) {
         console.error(err);
@@ -36,5 +31,5 @@ export function useHomeData() {
     };
   }, []);
 
-  return { categories, featuredProducts, loading };
+  return { categories, loading };
 }

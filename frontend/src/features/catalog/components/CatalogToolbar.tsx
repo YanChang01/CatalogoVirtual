@@ -1,5 +1,10 @@
 import { ChevronDown, Grid3X3, List, SlidersHorizontal, X } from "lucide-react";
-import { SORT_OPTIONS } from "@/data/products";
+
+const SORT_OPTIONS = [
+  { value: "newest", label: "Más recientes" },
+  { value: "price-asc", label: "Precio: menor a mayor" },
+  { value: "price-desc", label: "Precio: mayor a menor" },
+];
 
 interface CatalogToolbarProps {
   filteredCount: number;

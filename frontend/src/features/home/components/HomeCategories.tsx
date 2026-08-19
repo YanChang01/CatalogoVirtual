@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { ChevronRight } from "lucide-react";
-import type { CategoryWithCount } from "@/lib/api/products";
+import type { CategoryWithCount } from "@/types/product";
 
 const CATEGORY_GRADIENTS = [
   "bg-gradient-to-br from-rose-500/20 to-orange-500/10",

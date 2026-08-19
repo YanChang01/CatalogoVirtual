@@ -56,18 +56,6 @@ export function HomeHero() {
           className="absolute inset-0 w-full h-full object-cover opacity-70"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/20 lg:to-transparent" />
-        <div className="absolute bottom-10 left-8 bg-card/80 backdrop-blur-sm border border-border px-5 py-4">
-          <p className="text-xs text-muted-foreground mb-1 tracking-wider uppercase">
-            Destacado
-          </p>
-          <p
-            className="text-foreground text-sm font-medium"
-            style={{ fontFamily: "'Fraunces', serif" }}
-          >
-            Velvet Rose Pro
-          </p>
-          <p className="text-primary text-sm mt-0.5">$89.99</p>
-        </div>
       </div>
     </section>
   );

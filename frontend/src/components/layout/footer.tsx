@@ -1,4 +1,17 @@
-import { FOOTER_COLUMNS } from "@/data/footer";
+const FOOTER_COLUMNS = [
+  {
+    title: "Tienda",
+    links: ["Catálogo", "Novedades", "Ofertas", "Gift Cards"],
+  },
+  {
+    title: "Soporte",
+    links: ["Envíos", "Devoluciones", "FAQ", "Contacto"],
+  },
+  {
+    title: "Legal",
+    links: ["Privacidad", "Términos", "Cookies"],
+  },
+];
 
 export default function Footer() {
   return (

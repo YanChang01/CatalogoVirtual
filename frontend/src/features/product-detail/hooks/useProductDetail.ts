@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { fetchProductByName, type Product } from "@/lib/api/products";
+import { fetchProductByName } from "@/features/product-detail/api/products";
+import type { Product } from "@/types/product";
 
 interface UseProductDetailReturn {
   product: Product | null;
