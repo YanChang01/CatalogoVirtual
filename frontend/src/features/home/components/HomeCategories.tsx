@@ -19,7 +19,10 @@ export function HomeCategories({ categories, loading }: HomeCategoriesProps) {
   return (
     <section id="categorias" className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="flex items-end justify-between mb-12">
-        <h2 className="text-2xl" style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}>
+        <h2
+          className="text-2xl"
+          style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+        >
           Por categoría
         </h2>
         <Link
