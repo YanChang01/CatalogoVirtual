@@ -52,6 +52,9 @@ src/
 - **Product type adapter** — `src/api/products.ts` maps API responses (e.g., `is_active` → `isActive`, `image_url` → `imageUrl`, `category_id` → category name). Import `Product` from `@/types/product`, not from `@/lib/api/types.gen`.
 - **Feature API layer** — each feature's `api/` folder contains feature-specific fetch functions. Shared infrastructure (fetchProducts, fetchCategories) lives in `src/api/products.ts`.
 - **Auth feature** — context, provider, and hook are in `src/features/auth/`. Route guards (`ProtectedRoute`, `GuestRoute`) are in `src/components/auth/`.
+- **shadcn components** — `src/components/ui/` and `src/hooks/` hold installed shadcn/base-ui files; they are ESLint-excluded like generated code — do not hand-edit them. They import `cn` from `@/lib/utils`, which is a shim re-exporting from `@/utils/utils`.
+- **base-ui patterns differ from Radix/shadcn docs**: Button has no `asChild` — use `render={<Link to="..." />}` instead. Select's `onValueChange` can pass `null`. Toasts use `toast.add({ type, title })` from `@/components/ui/toast` (Toaster is mounted in `src/app/provider.tsx`).
+- **Admin pages** — classic layout under `/admin` (`AdminLayout` with shadcn Sidebar in `src/features/admin/components/`). List pages only — create/edit/detail happen in right-side Sheets (`ProductSheet`, `CategorySheet`, `UserSheet`), no per-entity routes. Admin code uses generated snake_case API types (`ProductResponse`, etc.) directly, NOT the camelCase storefront adapter. Entities identified by name (products/categories) or email (users); deletes are soft deletes with restore endpoints.
 
 ## Environment
 - Backend API connection configured via `.env` (`VITE_API_BASE_URL`).
