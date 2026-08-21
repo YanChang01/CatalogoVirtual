@@ -1,17 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Users, UsersRound } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { routes } from "@/config/routes";
 import { useAdminUsers } from "@/features/admin/hooks/useAdminUsers";
 import { UserTable } from "@/features/admin/components/UserTable";
+import { AdminPagination } from "@/features/admin/components/AdminPagination";
+import {
+  AdminPageHeader,
+  AdminResultCount,
+} from "@/features/admin/components/AdminPageHeader";
+import { EmptyState } from "@/features/admin/components/EmptyState";
+import { AdminTableSkeleton } from "@/features/admin/components/AdminTableSkeleton";
 import { deleteUser, restoreUser } from "@/features/admin/api/users";
 import { toast } from "@/components/ui/toast";
 
 export default function AdminUsersPage() {
   const {
     users,
+    filteredCount,
+    totalCount,
     loading,
     error,
     search,
@@ -19,6 +29,9 @@ export default function AdminUsersPage() {
     showDeleted,
     setShowDeleted,
     reload,
+    currentPage,
+    setCurrentPage,
+    totalPages,
   } = useAdminUsers();
   const [busy, setBusy] = useState(false);
 
@@ -56,19 +69,17 @@ export default function AdminUsersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Usuarios</h1>
-          <p className="text-sm text-muted-foreground">
-            Gestiona los usuarios del sistema.
-          </p>
-        </div>
-        <Button render={<Link to={routes.admin.users.new} />}>
-          <Plus /> Nuevo usuario
-        </Button>
-      </div>
+      <AdminPageHeader
+        title="Usuarios"
+        description="Gestiona los usuarios del sistema."
+        actions={
+          <Button render={<Link to={routes.admin.users.new} />}>
+            <Plus /> Nuevo usuario
+          </Button>
+        }
+      />
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <Input
           name="search"
           placeholder="Buscar usuarios..."
@@ -78,11 +89,10 @@ export default function AdminUsersPage() {
           className="max-w-xs"
         />
         <label className="flex items-center gap-2 text-sm font-normal">
-          <input
-            type="checkbox"
+          <Switch
             checked={showDeleted}
-            onChange={(e) => setShowDeleted(e.target.checked)}
-            className="size-4 accent-primary"
+            onCheckedChange={(checked) => setShowDeleted(checked === true)}
+            aria-label="Ver usuarios eliminados"
           />
           Ver eliminados
         </label>
@@ -91,21 +101,48 @@ export default function AdminUsersPage() {
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       {loading ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          Cargando usuarios...
-        </p>
+        <AdminTableSkeleton columns={5} />
+      ) : users.length === 0 ? (
+        search || totalCount > 0 ? (
+          <EmptyState
+            icon={UsersRound}
+            title="Sin resultados"
+            description={`Ningún usuario coincide con «${search}».`}
+          />
+        ) : (
+          <EmptyState
+            icon={Users}
+            title="Aún no hay usuarios"
+            description="Crea el primer usuario del sistema."
+            action={
+              <Button render={<Link to={routes.admin.users.new} />} size="sm">
+                <Plus /> Crear usuario
+              </Button>
+            }
+          />
+        )
       ) : (
-        <UserTable
-          users={users}
-          showDeleted={showDeleted}
-          onDelete={handleDelete}
-          onRestore={handleRestore}
-        />
-      )}
-      {busy && (
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          Procesando...
-        </p>
+        <>
+          <AdminResultCount
+            count={filteredCount}
+            singular="usuario"
+            plural="usuarios"
+            searching={!!search}
+            query={search}
+          />
+          <UserTable
+            users={users}
+            showDeleted={showDeleted}
+            busy={busy}
+            onDelete={handleDelete}
+            onRestore={handleRestore}
+          />
+          <AdminPagination
+            page={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
     </div>
   );

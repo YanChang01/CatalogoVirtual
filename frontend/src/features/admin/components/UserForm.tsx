@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -80,6 +81,11 @@ export function UserForm({ initialData, userEmail }: UserFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>{isEdit ? "Editar usuario" : "Nuevo usuario"}</CardTitle>
+          <CardDescription>
+            {isEdit
+              ? "Actualiza los datos del usuario. La contraseña no se puede cambiar desde aquí."
+              : "Registra una nueva cuenta de usuario."}
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Input

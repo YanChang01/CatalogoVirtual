@@ -1,9 +1,17 @@
 import { useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router";
-import { LayoutDashboard, Package, Shapes, Users } from "lucide-react";
+import {
+  ExternalLink,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Shapes,
+  Users,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -15,6 +23,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/features/auth/useAuth";
 import { routes } from "@/config/routes";
 
 const NAV_ITEMS = [
@@ -35,8 +44,15 @@ const NAV_ITEMS = [
   },
 ];
 
-export function AdminLayout() {
+function useCurrentSection() {
   const { pathname } = useLocation();
+  const match = NAV_ITEMS.find((item) => pathname.startsWith(item.to));
+  return match?.title ?? null;
+}
+
+export function AdminLayout() {
+  const section = useCurrentSection();
+  const { logout } = useAuth();
 
   useEffect(() => {
     document.documentElement.classList.add("admin");
@@ -63,7 +79,7 @@ export function AdminLayout() {
                 {NAV_ITEMS.map((item) => (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton
-                      isActive={pathname.startsWith(item.to)}
+                      isActive={section === item.title}
                       tooltip={item.title}
                       render={<Link to={item.to} />}
                     >
@@ -76,11 +92,38 @@ export function AdminLayout() {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Ver tienda"
+                render={<a href={routes.home.path} target="_blank" rel="noreferrer" />}
+              >
+                <ExternalLink />
+                <span>Ver tienda</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Cerrar sesión" onClick={logout}>
+                <LogOut />
+                <span>Cerrar sesión</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <header className="flex h-12 items-center gap-3 border-b px-4">
           <SidebarTrigger />
-          <span className="text-sm text-muted-foreground">Administración</span>
+          <nav aria-label="Ruta" className="flex items-center gap-1.5 text-sm">
+            <span className="text-muted-foreground">Administración</span>
+            {section && (
+              <>
+                <span className="text-muted-foreground/50">/</span>
+                <span className="font-medium text-foreground">{section}</span>
+              </>
+            )}
+          </nav>
         </header>
         <main className="flex-1 p-6">
           <Outlet />

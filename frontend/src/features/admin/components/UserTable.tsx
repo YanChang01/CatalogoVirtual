@@ -27,6 +27,7 @@ import type { UserResponse } from "@/lib/api/types.gen";
 interface UserTableProps {
   users: UserResponse[];
   showDeleted: boolean;
+  busy?: boolean;
   onDelete: (email: string) => Promise<void>;
   onRestore: (email: string) => Promise<void>;
 }
@@ -34,6 +35,7 @@ interface UserTableProps {
 export function UserTable({
   users,
   showDeleted,
+  busy = false,
   onDelete,
   onRestore,
 }: UserTableProps) {
@@ -75,6 +77,7 @@ export function UserTable({
                   <Button
                     variant="outline"
                     size="sm"
+                    disabled={busy}
                     onClick={() => onRestore(user.email)}
                   >
                     <RotateCcw /> Restaurar
@@ -84,6 +87,7 @@ export function UserTable({
                     <Button
                       variant="ghost"
                       size="icon-sm"
+                      disabled={busy}
                       render={
                         <Link
                           to={routes.admin.users.edit(user.email)}
@@ -99,6 +103,7 @@ export function UserTable({
                           <Button
                             variant="ghost"
                             size="icon-sm"
+                            disabled={busy}
                             aria-label={`Eliminar ${user.fullname}`}
                           />
                         }
@@ -114,9 +119,12 @@ export function UserTable({
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogCancel disabled={busy}>
+                            Cancelar
+                          </AlertDialogCancel>
                           <AlertDialogAction
                             variant="destructive"
+                            disabled={busy}
                             onClick={() => onDelete(user.email)}
                           >
                             Eliminar

@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Shapes, ShapesIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { routes } from "@/config/routes";
 import { useAdminCategories } from "@/features/admin/hooks/useAdminCategories";
 import { CategoryTable } from "@/features/admin/components/CategoryTable";
+import { AdminPagination } from "@/features/admin/components/AdminPagination";
+import {
+  AdminPageHeader,
+  AdminResultCount,
+} from "@/features/admin/components/AdminPageHeader";
+import { EmptyState } from "@/features/admin/components/EmptyState";
+import { AdminTableSkeleton } from "@/features/admin/components/AdminTableSkeleton";
 import {
   deleteCategory,
   restoreCategory,
@@ -15,6 +23,8 @@ import { toast } from "@/components/ui/toast";
 export default function AdminCategoriesPage() {
   const {
     categories,
+    filteredCount,
+    totalCount,
     loading,
     error,
     search,
@@ -22,6 +32,9 @@ export default function AdminCategoriesPage() {
     showDeleted,
     setShowDeleted,
     reload,
+    currentPage,
+    setCurrentPage,
+    totalPages,
   } = useAdminCategories();
   const [busy, setBusy] = useState(false);
 
@@ -59,19 +72,17 @@ export default function AdminCategoriesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Categorías</h1>
-          <p className="text-sm text-muted-foreground">
-            Gestiona las categorías del catálogo.
-          </p>
-        </div>
-        <Button render={<Link to={routes.admin.categories.new} />}>
-          <Plus /> Nueva categoría
-        </Button>
-      </div>
+      <AdminPageHeader
+        title="Categorías"
+        description="Gestiona las categorías del catálogo."
+        actions={
+          <Button render={<Link to={routes.admin.categories.new} />}>
+            <Plus /> Nueva categoría
+          </Button>
+        }
+      />
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <Input
           name="search"
           placeholder="Buscar categorías..."
@@ -81,11 +92,10 @@ export default function AdminCategoriesPage() {
           className="max-w-xs"
         />
         <label className="flex items-center gap-2 text-sm font-normal">
-          <input
-            type="checkbox"
+          <Switch
             checked={showDeleted}
-            onChange={(e) => setShowDeleted(e.target.checked)}
-            className="size-4 accent-primary"
+            onCheckedChange={(checked) => setShowDeleted(checked === true)}
+            aria-label="Ver categorías eliminadas"
           />
           Ver eliminadas
         </label>
@@ -94,21 +104,48 @@ export default function AdminCategoriesPage() {
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       {loading ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          Cargando categorías...
-        </p>
+        <AdminTableSkeleton columns={4} />
+      ) : categories.length === 0 ? (
+        search || totalCount > 0 ? (
+          <EmptyState
+            icon={Shapes}
+            title="Sin resultados"
+            description={`Ninguna categoría coincide con «${search}».`}
+          />
+        ) : (
+          <EmptyState
+            icon={ShapesIcon}
+            title="Aún no hay categorías"
+            description="Crea la primera categoría para organizar el catálogo."
+            action={
+              <Button render={<Link to={routes.admin.categories.new} />} size="sm">
+                <Plus /> Crear categoría
+              </Button>
+            }
+          />
+        )
       ) : (
-        <CategoryTable
-          categories={categories}
-          showDeleted={showDeleted}
-          onDelete={handleDelete}
-          onRestore={handleRestore}
-        />
-      )}
-      {busy && (
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          Procesando...
-        </p>
+        <>
+          <AdminResultCount
+            count={filteredCount}
+            singular="categoría"
+            plural="categorías"
+            searching={!!search}
+            query={search}
+          />
+          <CategoryTable
+            categories={categories}
+            showDeleted={showDeleted}
+            busy={busy}
+            onDelete={handleDelete}
+            onRestore={handleRestore}
+          />
+          <AdminPagination
+            page={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
     </div>
   );

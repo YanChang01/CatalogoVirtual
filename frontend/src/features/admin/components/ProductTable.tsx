@@ -24,9 +24,14 @@ import {
 import { routes } from "@/config/routes";
 import type { ProductResponse } from "@/lib/api/types.gen";
 
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1760860992203-85ca32536788?w=64&h=64&fit=crop&auto=format";
+
 interface ProductTableProps {
   products: ProductResponse[];
   showDeleted: boolean;
+  busy?: boolean;
+  categoryNames: Map<number, string>;
   onDelete: (name: string) => Promise<void>;
   onRestore: (name: string) => Promise<void>;
 }
@@ -34,101 +39,124 @@ interface ProductTableProps {
 export function ProductTable({
   products,
   showDeleted,
+  busy = false,
+  categoryNames,
   onDelete,
   onRestore,
 }: ProductTableProps) {
-  if (products.length === 0) {
-    return (
-      <p className="py-12 text-center text-sm text-muted-foreground">
-        No hay productos para mostrar.
-      </p>
-    );
-  }
-
   return (
     <div className="rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nombre</TableHead>
+            <TableHead>Producto</TableHead>
+            <TableHead>Categoría</TableHead>
             <TableHead>Precio</TableHead>
             <TableHead>Estado</TableHead>
+            <TableHead>Fecha</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell className="font-medium">{product.name}</TableCell>
-              <TableCell>${Number(product.price).toFixed(2)}</TableCell>
-              <TableCell>
-                {showDeleted || product.is_deleted ? (
-                  <Badge className="rounded-sm" variant="destructive">Eliminado</Badge>
-                ) : product.is_active === false ? (
-                  <Badge className="rounded-sm" variant="secondary">Inactivo</Badge>
-                ) : (
-                  <Badge className="rounded-sm" variant="outline">Activo</Badge>
-                )}
-              </TableCell>
-              <TableCell className="text-right">
-                {showDeleted || product.is_deleted ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onRestore(product.name)}
-                  >
-                    <RotateCcw /> Restaurar
-                  </Button>
-                ) : (
-                  <div className="flex justify-end gap-1">
+          {products.map((product) => {
+            const deleted = showDeleted || product.is_deleted;
+            return (
+              <TableRow key={product.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={product.image_url || FALLBACK_IMAGE}
+                      alt=""
+                      loading="lazy"
+                      className="size-8 shrink-0 rounded-sm border object-cover"
+                    />
+                    <span className="font-medium">{product.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {categoryNames.get(product.category_id) ?? "—"}
+                </TableCell>
+                <TableCell>${Number(product.price).toFixed(2)}</TableCell>
+                <TableCell>
+                  {deleted ? (
+                    <Badge className="rounded-sm" variant="destructive">Eliminado</Badge>
+                  ) : product.is_active === false ? (
+                    <Badge className="rounded-sm" variant="secondary">Inactivo</Badge>
+                  ) : (
+                    <Badge className="rounded-sm" variant="outline">Activo</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {new Date(product.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-right">
+                  {deleted ? (
                     <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      render={
-                        <Link
-                          to={routes.admin.products.edit(product.name)}
-                          aria-label={`Editar ${product.name}`}
-                        />
-                      }
+                      variant="outline"
+                      size="sm"
+                      disabled={busy}
+                      onClick={() => onRestore(product.name)}
                     >
-                      <Pencil />
+                      <RotateCcw /> Restaurar
                     </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger
+                  ) : (
+                    <div className="flex justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        disabled={busy}
                         render={
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label={`Eliminar ${product.name}`}
+                          <Link
+                            to={routes.admin.products.edit(product.name)}
+                            aria-label={`Editar ${product.name}`}
                           />
                         }
                       >
-                        <Trash2 className="text-destructive" />
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>¿Eliminar producto?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Se eliminará «{product.name}». Podrás restaurarlo más
-                            tarde desde la papelera.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            variant="destructive"
-                            onClick={() => onDelete(product.name)}
-                          >
-                            Eliminar
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+                        <Pencil />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger
+                          render={
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              disabled={busy}
+                              aria-label={`Eliminar ${product.name}`}
+                            />
+                          }
+                        >
+                          <Trash2 className="text-destructive" />
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              ¿Eliminar producto?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Se eliminará «{product.name}». Podrás restaurarlo más
+                              tarde desde la papelera.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel disabled={busy}>
+                              Cancelar
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              variant="destructive"
+                              disabled={busy}
+                              onClick={() => onDelete(product.name)}
+                            >
+                              Eliminar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

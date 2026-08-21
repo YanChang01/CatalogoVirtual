@@ -27,6 +27,7 @@ import type { CategoryResponse } from "@/lib/api/types.gen";
 interface CategoryTableProps {
   categories: CategoryResponse[];
   showDeleted: boolean;
+  busy?: boolean;
   onDelete: (name: string) => Promise<void>;
   onRestore: (name: string) => Promise<void>;
 }
@@ -34,6 +35,7 @@ interface CategoryTableProps {
 export function CategoryTable({
   categories,
   showDeleted,
+  busy = false,
   onDelete,
   onRestore,
 }: CategoryTableProps) {
@@ -75,6 +77,7 @@ export function CategoryTable({
                   <Button
                     variant="outline"
                     size="sm"
+                    disabled={busy}
                     onClick={() => onRestore(category.name)}
                   >
                     <RotateCcw /> Restaurar
@@ -84,6 +87,7 @@ export function CategoryTable({
                     <Button
                       variant="ghost"
                       size="icon-sm"
+                      disabled={busy}
                       render={
                         <Link
                           to={routes.admin.categories.edit(category.name)}
@@ -99,6 +103,7 @@ export function CategoryTable({
                           <Button
                             variant="ghost"
                             size="icon-sm"
+                            disabled={busy}
                             aria-label={`Eliminar ${category.name}`}
                           />
                         }
@@ -116,9 +121,12 @@ export function CategoryTable({
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogCancel disabled={busy}>
+                            Cancelar
+                          </AlertDialogCancel>
                           <AlertDialogAction
                             variant="destructive"
+                            disabled={busy}
                             onClick={() => onDelete(category.name)}
                           >
                             Eliminar

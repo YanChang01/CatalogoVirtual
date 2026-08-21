@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -66,6 +67,11 @@ export function CategoryForm({ initialName, categoryName }: CategoryFormProps) {
           <CardTitle>
             {isEdit ? "Editar categoría" : "Nueva categoría"}
           </CardTitle>
+          <CardDescription>
+            {isEdit
+              ? "Cambia el nombre de la categoría."
+              : "Agrupa los productos bajo un nombre común."}
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Input

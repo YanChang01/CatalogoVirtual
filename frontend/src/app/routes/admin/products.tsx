@@ -1,17 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Plus, Search } from "lucide-react";
+import { Package, PackageSearch, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { routes } from "@/config/routes";
 import { useAdminProducts } from "@/features/admin/hooks/useAdminProducts";
 import { ProductTable } from "@/features/admin/components/ProductTable";
+import { AdminPagination } from "@/features/admin/components/AdminPagination";
+import {
+  AdminPageHeader,
+  AdminResultCount,
+} from "@/features/admin/components/AdminPageHeader";
+import { EmptyState } from "@/features/admin/components/EmptyState";
+import { AdminTableSkeleton } from "@/features/admin/components/AdminTableSkeleton";
 import { deleteProduct, restoreProduct } from "@/features/admin/api/products";
 import { toast } from "@/components/ui/toast";
 
 export default function AdminProductsPage() {
   const {
     products,
+    filteredCount,
+    totalCount,
     loading,
     error,
     search,
@@ -19,6 +29,10 @@ export default function AdminProductsPage() {
     showDeleted,
     setShowDeleted,
     reload,
+    categoryNames,
+    currentPage,
+    setCurrentPage,
+    totalPages,
   } = useAdminProducts();
   const [busy, setBusy] = useState(false);
 
@@ -56,19 +70,17 @@ export default function AdminProductsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Productos</h1>
-          <p className="text-sm text-muted-foreground">
-            Gestiona el catálogo de productos.
-          </p>
-        </div>
-        <Button render={<Link to={routes.admin.products.new} />}>
-          <Plus /> Nuevo producto
-        </Button>
-      </div>
+      <AdminPageHeader
+        title="Productos"
+        description="Gestiona el catálogo de productos."
+        actions={
+          <Button render={<Link to={routes.admin.products.new} />}>
+            <Plus /> Nuevo producto
+          </Button>
+        }
+      />
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <Input
           name="search"
           placeholder="Buscar productos..."
@@ -78,36 +90,61 @@ export default function AdminProductsPage() {
           className="max-w-xs"
         />
         <label className="flex items-center gap-2 text-sm font-normal">
-          <input
-            type="checkbox"
+          <Switch
             checked={showDeleted}
-            onChange={(e) => setShowDeleted(e.target.checked)}
-            className="size-4 accent-primary"
+            onCheckedChange={(checked) => setShowDeleted(checked === true)}
+            aria-label="Ver productos eliminados"
           />
           Ver eliminados
         </label>
       </div>
 
-      {error && (
-        <p className="text-sm text-destructive">{error}</p>
-      )}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       {loading ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          Cargando productos...
-        </p>
+        <AdminTableSkeleton columns={6} />
+      ) : products.length === 0 ? (
+        search || totalCount > 0 ? (
+          <EmptyState
+            icon={PackageSearch}
+            title="Sin resultados"
+            description={`Ningún producto coincide con «${search}».`}
+          />
+        ) : (
+          <EmptyState
+            icon={Package}
+            title="Aún no hay productos"
+            description="Crea tu primer producto para que aparezca en la tienda."
+            action={
+              <Button render={<Link to={routes.admin.products.new} />} size="sm">
+                <Plus /> Crear producto
+              </Button>
+            }
+          />
+        )
       ) : (
-        <ProductTable
-          products={products}
-          showDeleted={showDeleted}
-          onDelete={handleDelete}
-          onRestore={handleRestore}
-        />
-      )}
-      {busy && (
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          Procesando...
-        </p>
+        <>
+          <AdminResultCount
+            count={filteredCount}
+            singular="producto"
+            plural="productos"
+            searching={!!search}
+            query={search}
+          />
+          <ProductTable
+            products={products}
+            showDeleted={showDeleted}
+            busy={busy}
+            categoryNames={categoryNames}
+            onDelete={handleDelete}
+            onRestore={handleRestore}
+          />
+          <AdminPagination
+            page={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
     </div>
   );

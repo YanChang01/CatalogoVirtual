@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -13,6 +14,7 @@ import {
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -100,6 +102,11 @@ export function ProductForm({ initialData, productName }: ProductFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>{isEdit ? "Editar producto" : "Nuevo producto"}</CardTitle>
+          <CardDescription>
+            {isEdit
+              ? "Actualiza la información del producto."
+              : "Añade un nuevo producto al catálogo de la tienda."}
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Input
@@ -171,14 +178,32 @@ export function ProductForm({ initialData, productName }: ProductFormProps) {
             onChange={(e) => setImageUrl(e.target.value)}
             helperText="Opcional. Debe ser una URL válida."
           />
-          <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <input
-              type="checkbox"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-              className="size-4 accent-primary"
-            />
+          {imageUrl.trim() && (
+            <div className="flex items-center gap-3 rounded-lg border border-dashed p-3">
+              <img
+                src={imageUrl.trim()}
+                alt={`Vista previa de ${name || "producto"}`}
+                className="size-16 shrink-0 rounded-sm border object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.opacity = "0";
+                }}
+                onLoad={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                }}
+                style={{ opacity: 0 }}
+              />
+              <p className="text-xs text-muted-foreground">
+                Vista previa de la imagen.
+              </p>
+            </div>
+          )}
+          <label className="flex items-center justify-between gap-2 text-sm font-medium text-foreground">
             Producto activo
+            <Switch
+              checked={isActive}
+              onCheckedChange={(checked) => setIsActive(checked === true)}
+              aria-label="Producto activo"
+            />
           </label>
           <div className="flex justify-end gap-2 pt-2">
             <Button
