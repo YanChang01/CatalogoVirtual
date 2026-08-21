@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import { Plus, Search, Shapes, ShapesIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { routes } from "@/config/routes";
 import { useAdminCategories } from "@/features/admin/hooks/useAdminCategories";
 import { CategoryTable } from "@/features/admin/components/CategoryTable";
+import {
+  CategorySheet,
+  type CategorySheetMode,
+} from "@/features/admin/components/CategorySheet";
 import { AdminPagination } from "@/features/admin/components/AdminPagination";
 import {
   AdminPageHeader,
@@ -18,7 +20,13 @@ import {
   deleteCategory,
   restoreCategory,
 } from "@/features/admin/api/categories";
+import type { CategoryResponse } from "@/lib/api/types.gen";
 import { toast } from "@/components/ui/toast";
+
+interface CategorySheetState {
+  mode: CategorySheetMode;
+  category: CategoryResponse | null;
+}
 
 export default function AdminCategoriesPage() {
   const {
@@ -37,6 +45,7 @@ export default function AdminCategoriesPage() {
     totalPages,
   } = useAdminCategories();
   const [busy, setBusy] = useState(false);
+  const [sheet, setSheet] = useState<CategorySheetState | null>(null);
 
   async function handleDelete(name: string) {
     setBusy(true);
@@ -44,6 +53,7 @@ export default function AdminCategoriesPage() {
       await deleteCategory(name);
       toast.add({ type: "success", title: "Categoría eliminada" });
       await reload();
+      setSheet(null);
     } catch (err) {
       toast.add({
         type: "error",
@@ -76,7 +86,7 @@ export default function AdminCategoriesPage() {
         title="Categorías"
         description="Gestiona las categorías del catálogo."
         actions={
-          <Button render={<Link to={routes.admin.categories.new} />}>
+          <Button onClick={() => setSheet({ mode: "create", category: null })}>
             <Plus /> Nueva categoría
           </Button>
         }
@@ -118,7 +128,10 @@ export default function AdminCategoriesPage() {
             title="Aún no hay categorías"
             description="Crea la primera categoría para organizar el catálogo."
             action={
-              <Button render={<Link to={routes.admin.categories.new} />} size="sm">
+              <Button
+                size="sm"
+                onClick={() => setSheet({ mode: "create", category: null })}
+              >
                 <Plus /> Crear categoría
               </Button>
             }
@@ -137,6 +150,7 @@ export default function AdminCategoriesPage() {
             categories={categories}
             showDeleted={showDeleted}
             busy={busy}
+            onEdit={(category) => setSheet({ mode: "edit", category })}
             onDelete={handleDelete}
             onRestore={handleRestore}
           />
@@ -147,6 +161,19 @@ export default function AdminCategoriesPage() {
           />
         </>
       )}
+
+      <CategorySheet
+        open={sheet !== null}
+        onOpenChange={(open) => {
+          if (!open) setSheet(null);
+        }}
+        mode={sheet?.mode ?? "create"}
+        category={sheet?.category ?? null}
+        onSuccess={() => {
+          setSheet(null);
+          reload();
+        }}
+      />
     </div>
   );
 }

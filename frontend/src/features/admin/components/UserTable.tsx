@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import {
   Table,
@@ -21,13 +20,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { routes } from "@/config/routes";
 import type { UserResponse } from "@/lib/api/types.gen";
 
 interface UserTableProps {
   users: UserResponse[];
   showDeleted: boolean;
   busy?: boolean;
+  onEdit: (user: UserResponse) => void;
   onDelete: (email: string) => Promise<void>;
   onRestore: (email: string) => Promise<void>;
 }
@@ -36,6 +35,7 @@ export function UserTable({
   users,
   showDeleted,
   busy = false,
+  onEdit,
   onDelete,
   onRestore,
 }: UserTableProps) {
@@ -88,12 +88,8 @@ export function UserTable({
                       variant="ghost"
                       size="icon-sm"
                       disabled={busy}
-                      render={
-                        <Link
-                          to={routes.admin.users.edit(user.email)}
-                          aria-label={`Editar ${user.fullname}`}
-                        />
-                      }
+                      onClick={() => onEdit(user)}
+                      aria-label={`Editar ${user.fullname}`}
                     >
                       <Pencil />
                     </Button>

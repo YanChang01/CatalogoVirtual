@@ -15,18 +15,12 @@ export const routes = {
     },
     products: {
       path: "/admin/productos",
-      new: "/admin/productos/nuevo",
-      edit: (name: string) => `/admin/productos/${encodeURIComponent(name)}/editar`,
     },
     categories: {
       path: "/admin/categorias",
-      new: "/admin/categorias/nueva",
-      edit: (name: string) => `/admin/categorias/${encodeURIComponent(name)}/editar`,
     },
     users: {
       path: "/admin/usuarios",
-      new: "/admin/usuarios/nuevo",
-      edit: (email: string) => `/admin/usuarios/${encodeURIComponent(email)}/editar`,
     },
   },
   auth: {

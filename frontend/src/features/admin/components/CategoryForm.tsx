@@ -1,16 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { routes } from "@/config/routes";
 import {
   createCategory,
   updateCategory,
@@ -19,10 +10,16 @@ import {
 interface CategoryFormProps {
   initialName?: string;
   categoryName?: string;
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
-export function CategoryForm({ initialName, categoryName }: CategoryFormProps) {
-  const navigate = useNavigate();
+export function CategoryForm({
+  initialName,
+  categoryName,
+  onSuccess,
+  onCancel,
+}: CategoryFormProps) {
   const isEdit = !!categoryName;
 
   const [name, setName] = useState(initialName ?? "");
@@ -49,7 +46,7 @@ export function CategoryForm({ initialName, categoryName }: CategoryFormProps) {
         await createCategory({ name: name.trim() });
         toast.add({ type: "success", title: "Categoría creada" });
       }
-      navigate(routes.admin.categories.path);
+      onSuccess();
     } catch (err) {
       toast.add({
         type: "error",
@@ -61,42 +58,26 @@ export function CategoryForm({ initialName, categoryName }: CategoryFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {isEdit ? "Editar categoría" : "Nueva categoría"}
-          </CardTitle>
-          <CardDescription>
-            {isEdit
-              ? "Cambia el nombre de la categoría."
-              : "Agrupa los productos bajo un nombre común."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <Input
-            name="name"
-            label="Nombre"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            error={error ?? undefined}
-            helperText="Entre 3 y 100 caracteres."
-            required
-          />
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate(routes.admin.categories.path)}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear categoría"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    <form onSubmit={handleSubmit} className="flex flex-1 flex-col min-h-0">
+      <div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4 flex-1">
+        <Input
+          name="name"
+          label="Nombre"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          error={error ?? undefined}
+          helperText="Entre 3 y 100 caracteres."
+          required
+        />
+      </div>
+      <div className="flex justify-end gap-2 border-t p-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={saving}>
+          {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear categoría"}
+        </Button>
+      </div>
     </form>
   );
 }

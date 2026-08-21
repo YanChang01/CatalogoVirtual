@@ -1,16 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { routes } from "@/config/routes";
 import { createUser, updateUser } from "@/features/admin/api/users";
 
 interface UserFormProps {
@@ -20,10 +11,16 @@ interface UserFormProps {
     email: string;
   };
   userEmail?: string;
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
-export function UserForm({ initialData, userEmail }: UserFormProps) {
-  const navigate = useNavigate();
+export function UserForm({
+  initialData,
+  userEmail,
+  onSuccess,
+  onCancel,
+}: UserFormProps) {
   const isEdit = !!userEmail;
 
   const [fullname, setFullname] = useState(initialData?.fullname ?? "");
@@ -65,7 +62,7 @@ export function UserForm({ initialData, userEmail }: UserFormProps) {
         });
         toast.add({ type: "success", title: "Usuario creado" });
       }
-      navigate(routes.admin.users.path);
+      onSuccess();
     } catch (err) {
       toast.add({
         type: "error",
@@ -77,70 +74,56 @@ export function UserForm({ initialData, userEmail }: UserFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg">
-      <Card>
-        <CardHeader>
-          <CardTitle>{isEdit ? "Editar usuario" : "Nuevo usuario"}</CardTitle>
-          <CardDescription>
-            {isEdit
-              ? "Actualiza los datos del usuario. La contraseña no se puede cambiar desde aquí."
-              : "Registra una nueva cuenta de usuario."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-1 flex-col min-h-0">
+      <div className="flex flex-col gap-4 overflow-y-auto px-4 pb-4 flex-1">
+        <Input
+          name="fullname"
+          label="Nombre completo"
+          value={fullname}
+          onChange={(e) => setFullname(e.target.value)}
+          error={errors.fullname}
+          required
+        />
+        <Input
+          name="phone"
+          label="Teléfono"
+          inputMode="numeric"
+          maxLength={8}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+          error={errors.phone}
+          helperText="8 dígitos."
+          required
+        />
+        <Input
+          name="email"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={errors.email}
+          required
+        />
+        {!isEdit && (
           <Input
-            name="fullname"
-            label="Nombre completo"
-            value={fullname}
-            onChange={(e) => setFullname(e.target.value)}
-            error={errors.fullname}
+            name="password"
+            label="Contraseña"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={errors.password}
             required
           />
-          <Input
-            name="phone"
-            label="Teléfono"
-            inputMode="numeric"
-            maxLength={8}
-            value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-            error={errors.phone}
-            helperText="8 dígitos."
-            required
-          />
-          <Input
-            name="email"
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={errors.email}
-            required
-          />
-          {!isEdit && (
-            <Input
-              name="password"
-              label="Contraseña"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={errors.password}
-              required
-            />
-          )}
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate(routes.admin.users.path)}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear usuario"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        )}
+      </div>
+      <div className="flex justify-end gap-2 border-t p-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={saving}>
+          {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear usuario"}
+        </Button>
+      </div>
     </form>
   );
 }

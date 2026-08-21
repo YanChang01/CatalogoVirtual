@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import { Package, PackageSearch, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { routes } from "@/config/routes";
 import { useAdminProducts } from "@/features/admin/hooks/useAdminProducts";
 import { ProductTable } from "@/features/admin/components/ProductTable";
+import { ProductSheet, type ProductSheetMode } from "@/features/admin/components/ProductSheet";
 import { AdminPagination } from "@/features/admin/components/AdminPagination";
 import {
   AdminPageHeader,
@@ -15,7 +14,13 @@ import {
 import { EmptyState } from "@/features/admin/components/EmptyState";
 import { AdminTableSkeleton } from "@/features/admin/components/AdminTableSkeleton";
 import { deleteProduct, restoreProduct } from "@/features/admin/api/products";
+import type { ProductResponse } from "@/lib/api/types.gen";
 import { toast } from "@/components/ui/toast";
+
+interface ProductSheetState {
+  mode: ProductSheetMode;
+  product: ProductResponse | null;
+}
 
 export default function AdminProductsPage() {
   const {
@@ -35,6 +40,7 @@ export default function AdminProductsPage() {
     totalPages,
   } = useAdminProducts();
   const [busy, setBusy] = useState(false);
+  const [sheet, setSheet] = useState<ProductSheetState | null>(null);
 
   async function handleDelete(name: string) {
     setBusy(true);
@@ -42,6 +48,7 @@ export default function AdminProductsPage() {
       await deleteProduct(name);
       toast.add({ type: "success", title: "Producto eliminado" });
       await reload();
+      setSheet(null);
     } catch (err) {
       toast.add({
         type: "error",
@@ -74,7 +81,7 @@ export default function AdminProductsPage() {
         title="Productos"
         description="Gestiona el catálogo de productos."
         actions={
-          <Button render={<Link to={routes.admin.products.new} />}>
+          <Button onClick={() => setSheet({ mode: "create", product: null })}>
             <Plus /> Nuevo producto
           </Button>
         }
@@ -116,7 +123,10 @@ export default function AdminProductsPage() {
             title="Aún no hay productos"
             description="Crea tu primer producto para que aparezca en la tienda."
             action={
-              <Button render={<Link to={routes.admin.products.new} />} size="sm">
+              <Button
+                size="sm"
+                onClick={() => setSheet({ mode: "create", product: null })}
+              >
                 <Plus /> Crear producto
               </Button>
             }
@@ -136,6 +146,8 @@ export default function AdminProductsPage() {
             showDeleted={showDeleted}
             busy={busy}
             categoryNames={categoryNames}
+            onView={(product) => setSheet({ mode: "view", product })}
+            onEdit={(product) => setSheet({ mode: "edit", product })}
             onDelete={handleDelete}
             onRestore={handleRestore}
           />
@@ -146,6 +158,23 @@ export default function AdminProductsPage() {
           />
         </>
       )}
+
+      <ProductSheet
+        open={sheet !== null}
+        onOpenChange={(open) => {
+          if (!open) setSheet(null);
+        }}
+        mode={sheet?.mode ?? "view"}
+        onModeChange={(mode) =>
+          setSheet((prev) => (prev ? { ...prev, mode } : prev))
+        }
+        product={sheet?.product ?? null}
+        categoryNames={categoryNames}
+        onSuccess={() => {
+          setSheet(null);
+          reload();
+        }}
+      />
     </div>
   );
 }

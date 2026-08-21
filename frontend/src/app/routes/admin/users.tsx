@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import { Plus, Search, Users, UsersRound } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { routes } from "@/config/routes";
 import { useAdminUsers } from "@/features/admin/hooks/useAdminUsers";
 import { UserTable } from "@/features/admin/components/UserTable";
+import {
+  UserSheet,
+  type UserSheetMode,
+} from "@/features/admin/components/UserSheet";
 import { AdminPagination } from "@/features/admin/components/AdminPagination";
 import {
   AdminPageHeader,
@@ -15,7 +17,13 @@ import {
 import { EmptyState } from "@/features/admin/components/EmptyState";
 import { AdminTableSkeleton } from "@/features/admin/components/AdminTableSkeleton";
 import { deleteUser, restoreUser } from "@/features/admin/api/users";
+import type { UserResponse } from "@/lib/api/types.gen";
 import { toast } from "@/components/ui/toast";
+
+interface UserSheetState {
+  mode: UserSheetMode;
+  user: UserResponse | null;
+}
 
 export default function AdminUsersPage() {
   const {
@@ -34,6 +42,7 @@ export default function AdminUsersPage() {
     totalPages,
   } = useAdminUsers();
   const [busy, setBusy] = useState(false);
+  const [sheet, setSheet] = useState<UserSheetState | null>(null);
 
   async function handleDelete(email: string) {
     setBusy(true);
@@ -41,6 +50,7 @@ export default function AdminUsersPage() {
       await deleteUser(email);
       toast.add({ type: "success", title: "Usuario eliminado" });
       await reload();
+      setSheet(null);
     } catch (err) {
       toast.add({
         type: "error",
@@ -73,7 +83,7 @@ export default function AdminUsersPage() {
         title="Usuarios"
         description="Gestiona los usuarios del sistema."
         actions={
-          <Button render={<Link to={routes.admin.users.new} />}>
+          <Button onClick={() => setSheet({ mode: "create", user: null })}>
             <Plus /> Nuevo usuario
           </Button>
         }
@@ -115,7 +125,10 @@ export default function AdminUsersPage() {
             title="Aún no hay usuarios"
             description="Crea el primer usuario del sistema."
             action={
-              <Button render={<Link to={routes.admin.users.new} />} size="sm">
+              <Button
+                size="sm"
+                onClick={() => setSheet({ mode: "create", user: null })}
+              >
                 <Plus /> Crear usuario
               </Button>
             }
@@ -134,6 +147,7 @@ export default function AdminUsersPage() {
             users={users}
             showDeleted={showDeleted}
             busy={busy}
+            onEdit={(user) => setSheet({ mode: "edit", user })}
             onDelete={handleDelete}
             onRestore={handleRestore}
           />
@@ -144,6 +158,19 @@ export default function AdminUsersPage() {
           />
         </>
       )}
+
+      <UserSheet
+        open={sheet !== null}
+        onOpenChange={(open) => {
+          if (!open) setSheet(null);
+        }}
+        mode={sheet?.mode ?? "create"}
+        user={sheet?.user ?? null}
+        onSuccess={() => {
+          setSheet(null);
+          reload();
+        }}
+      />
     </div>
   );
 }

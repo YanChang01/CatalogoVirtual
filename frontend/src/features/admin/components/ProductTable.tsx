@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import {
   Table,
@@ -21,7 +20,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { routes } from "@/config/routes";
 import type { ProductResponse } from "@/lib/api/types.gen";
 
 const FALLBACK_IMAGE =
@@ -32,6 +30,8 @@ interface ProductTableProps {
   showDeleted: boolean;
   busy?: boolean;
   categoryNames: Map<number, string>;
+  onView: (product: ProductResponse) => void;
+  onEdit: (product: ProductResponse) => void;
   onDelete: (name: string) => Promise<void>;
   onRestore: (name: string) => Promise<void>;
 }
@@ -41,6 +41,8 @@ export function ProductTable({
   showDeleted,
   busy = false,
   categoryNames,
+  onView,
+  onEdit,
   onDelete,
   onRestore,
 }: ProductTableProps) {
@@ -63,15 +65,22 @@ export function ProductTable({
             return (
               <TableRow key={product.id}>
                 <TableCell>
-                  <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => onView(product)}
+                    className="flex items-center gap-3 text-left rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={`Ver detalles de ${product.name}`}
+                  >
                     <img
                       src={product.image_url || FALLBACK_IMAGE}
                       alt=""
                       loading="lazy"
                       className="size-8 shrink-0 rounded-sm border object-cover"
                     />
-                    <span className="font-medium">{product.name}</span>
-                  </div>
+                    <span className="font-medium hover:text-primary transition-colors">
+                      {product.name}
+                    </span>
+                  </button>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {categoryNames.get(product.category_id) ?? "—"}
@@ -105,12 +114,8 @@ export function ProductTable({
                         variant="ghost"
                         size="icon-sm"
                         disabled={busy}
-                        render={
-                          <Link
-                            to={routes.admin.products.edit(product.name)}
-                            aria-label={`Editar ${product.name}`}
-                          />
-                        }
+                        onClick={() => onEdit(product)}
+                        aria-label={`Editar ${product.name}`}
                       >
                         <Pencil />
                       </Button>

@@ -7,14 +7,8 @@ import Catalog from "@/app/routes/catalog";
 import ProductDetail from "@/app/routes/product-detail";
 import LoginPage from "./routes/login";
 import AdminProductsPage from "./routes/admin/products";
-import AdminProductNewPage from "./routes/admin/product-new";
-import AdminProductEditPage from "./routes/admin/product-edit";
 import AdminCategoriesPage from "./routes/admin/categories";
-import AdminCategoryNewPage from "./routes/admin/category-new";
-import AdminCategoryEditPage from "./routes/admin/category-edit";
 import AdminUsersPage from "./routes/admin/users";
-import AdminUserNewPage from "./routes/admin/user-new";
-import AdminUserEditPage from "./routes/admin/user-edit";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { GuestRoute } from "@/components/auth/GuestRoute";
 import { AdminLayout } from "@/features/admin/components/AdminLayout";
@@ -35,14 +29,8 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to={routes.admin.products.path} replace />} />
             <Route path="productos" element={<AdminProductsPage />} />
-            <Route path="productos/nuevo" element={<AdminProductNewPage />} />
-            <Route path="productos/:productName/editar" element={<AdminProductEditPage />} />
             <Route path="categorias" element={<AdminCategoriesPage />} />
-            <Route path="categorias/nueva" element={<AdminCategoryNewPage />} />
-            <Route path="categorias/:categoryName/editar" element={<AdminCategoryEditPage />} />
             <Route path="usuarios" element={<AdminUsersPage />} />
-            <Route path="usuarios/nuevo" element={<AdminUserNewPage />} />
-            <Route path="usuarios/:userEmail/editar" element={<AdminUserEditPage />} />
           </Route>
         </Route>
 

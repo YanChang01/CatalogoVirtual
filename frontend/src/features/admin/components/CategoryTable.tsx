@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import {
   Table,
@@ -21,13 +20,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { routes } from "@/config/routes";
 import type { CategoryResponse } from "@/lib/api/types.gen";
 
 interface CategoryTableProps {
   categories: CategoryResponse[];
   showDeleted: boolean;
   busy?: boolean;
+  onEdit: (category: CategoryResponse) => void;
   onDelete: (name: string) => Promise<void>;
   onRestore: (name: string) => Promise<void>;
 }
@@ -36,6 +35,7 @@ export function CategoryTable({
   categories,
   showDeleted,
   busy = false,
+  onEdit,
   onDelete,
   onRestore,
 }: CategoryTableProps) {
@@ -88,12 +88,8 @@ export function CategoryTable({
                       variant="ghost"
                       size="icon-sm"
                       disabled={busy}
-                      render={
-                        <Link
-                          to={routes.admin.categories.edit(category.name)}
-                          aria-label={`Editar ${category.name}`}
-                        />
-                      }
+                      onClick={() => onEdit(category)}
+                      aria-label={`Editar ${category.name}`}
                     >
                       <Pencil />
                     </Button>
