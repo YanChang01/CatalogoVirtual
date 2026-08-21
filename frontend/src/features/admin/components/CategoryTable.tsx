@@ -65,9 +65,9 @@ export function CategoryTable({
               </TableCell>
               <TableCell>
                 {showDeleted || category.is_deleted ? (
-                  <Badge variant="destructive">Eliminada</Badge>
+                  <Badge className="rounded-sm" variant="destructive">Eliminada</Badge>
                 ) : (
-                  <Badge variant="outline">Activa</Badge>
+                  <Badge className="rounded-sm" variant="outline">Activa</Badge>
                 )}
               </TableCell>
               <TableCell className="text-right">

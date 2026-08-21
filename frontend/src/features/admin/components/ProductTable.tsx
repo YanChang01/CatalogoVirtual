@@ -63,11 +63,11 @@ export function ProductTable({
               <TableCell>${Number(product.price).toFixed(2)}</TableCell>
               <TableCell>
                 {showDeleted || product.is_deleted ? (
-                  <Badge variant="destructive">Eliminado</Badge>
+                  <Badge className="rounded-sm" variant="destructive">Eliminado</Badge>
                 ) : product.is_active === false ? (
-                  <Badge variant="secondary">Inactivo</Badge>
+                  <Badge className="rounded-sm" variant="secondary">Inactivo</Badge>
                 ) : (
-                  <Badge variant="outline">Activo</Badge>
+                  <Badge className="rounded-sm" variant="outline">Activo</Badge>
                 )}
               </TableCell>
               <TableCell className="text-right">

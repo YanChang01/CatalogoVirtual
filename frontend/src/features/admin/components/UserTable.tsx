@@ -65,9 +65,9 @@ export function UserTable({
               <TableCell>{user.phone}</TableCell>
               <TableCell>
                 {showDeleted || user.is_deleted ? (
-                  <Badge variant="destructive">Eliminado</Badge>
+                  <Badge className="rounded-sm" variant="destructive">Eliminado</Badge>
                 ) : (
-                  <Badge variant="outline">Activo</Badge>
+                  <Badge className="rounded-sm" variant="outline">Activo</Badge>
                 )}
               </TableCell>
               <TableCell className="text-right">

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router";
 import { LayoutDashboard, Package, Shapes, Users } from "lucide-react";
 import {
@@ -36,6 +37,11 @@ const NAV_ITEMS = [
 
 export function AdminLayout() {
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    document.documentElement.classList.add("admin");
+    return () => document.documentElement.classList.remove("admin");
+  }, []);
 
   return (
     <SidebarProvider>
