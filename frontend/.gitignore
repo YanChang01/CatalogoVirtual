@@ -28,3 +28,6 @@ dist-ssr
 
 # Docs
 docs/*
+
+# Agents skills
+.agents/
