@@ -39,11 +39,13 @@ export function ProductForm({
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [name, setName] = useState(initialData?.name ?? "");
   const [price, setPrice] = useState(initialData?.price ?? "");
-  const [description, setDescription] = useState(initialData?.description ?? "");
+  const [description, setDescription] = useState(
+    initialData?.description ?? "",
+  );
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? "");
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true);
   const [categoryId, setCategoryId] = useState<string>(
-    initialData ? String(initialData.categoryId) : ""
+    initialData ? String(initialData.categoryId) : "",
   );
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -130,11 +132,19 @@ export function ProductForm({
             <label className="text-sm font-medium text-foreground">
               Categoría
             </label>
-            <Select value={categoryId} onValueChange={(value) => setCategoryId(value ?? "")}>
+            <Select
+              value={categoryId}
+              onValueChange={(value) => setCategoryId(value ?? "")}
+            >
               <SelectTrigger
                 className={`w-full ${errors.categoryId ? "border-destructive" : ""}`}
               >
-                <SelectValue placeholder="Selecciona una categoría" />
+                <SelectValue placeholder="Selecciona una categoría">
+                  {(value) =>
+                    categories.find((c) => String(c.id) === value)?.name ??
+                    "Selecciona una categoría"
+                  }
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
@@ -208,7 +218,11 @@ export function ProductForm({
           Cancelar
         </Button>
         <Button type="submit" disabled={saving}>
-          {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear producto"}
+          {saving
+            ? "Guardando..."
+            : isEdit
+              ? "Guardar cambios"
+              : "Crear producto"}
         </Button>
       </div>
     </form>
