@@ -7,6 +7,7 @@ bcrypt==5.0.0
 certifi==2026.6.17
 cffi==2.0.0
 click==8.4.2
+cloudinary==1.46.0
 colorama==0.4.6
 cryptography==49.0.0
 detect-installer==0.1.0
