@@ -22,12 +22,12 @@ async def create(category: CategoryCreate, session: AsyncSession = Depends(get_a
 
 #GET
 @router.get("/read/{name}", status_code=status.HTTP_200_OK, response_model=CategoryResponse)
-async def read(name: str, session: AsyncSession = Depends(get_async_session), current_user: EmailStr = Depends(get_current_user)) -> CategoryResponse:
+async def read(name: str, session: AsyncSession = Depends(get_async_session)) -> CategoryResponse:
     
     return await read_category(name=name, session=session)
 
 @router.get("/read", status_code=status.HTTP_200_OK, response_model=List[CategoryResponse])
-async def read2(session: AsyncSession = Depends(get_async_session), current_user: EmailStr = Depends(get_current_user)) -> List[CategoryResponse]:
+async def read2(session: AsyncSession = Depends(get_async_session)) -> List[CategoryResponse]:
     
     return await read_categories(session=session)
 
