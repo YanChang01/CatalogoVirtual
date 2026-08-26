@@ -22,12 +22,12 @@ async def create(product: ProductCreate, session: AsyncSession = Depends(get_asy
 
 #GET
 @router.get("/read/{name}", status_code=status.HTTP_200_OK, response_model=ProductResponse)
-async def read(name: str, session: AsyncSession = Depends(get_async_session), current_user: EmailStr = Depends(get_current_user)) -> ProductResponse:
+async def read(name: str, session: AsyncSession = Depends(get_async_session)) -> ProductResponse:
     
     return await read_product(name=name, session=session)
 
 @router.get("/read", status_code=status.HTTP_200_OK, response_model=List[ProductResponse])
-async def read2(session: AsyncSession = Depends(get_async_session), current_user: EmailStr = Depends(get_current_user)) -> List[ProductResponse]:
+async def read2(session: AsyncSession = Depends(get_async_session)) -> List[ProductResponse]:
     
     return await read_products(session=session)
 
