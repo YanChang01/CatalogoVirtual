@@ -94,7 +94,15 @@ class ProductResponse(ProductBase):
 
 class ProductWithCategory(ProductResponse):
     category: CategoryResponse
-
+    
+class SignatureResponse(BaseModel):
+    signature: str
+    timestamp: int
+    api_key: str
+    cloud_name: str
+    upload_preset: str
+    folder: str
+    
 # ============================
 # Resolver referencias circulares
 # ============================
