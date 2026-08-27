@@ -1,8 +1,10 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
+import cloudinary
 
 from core.config import settings
 from routers import users, categories, products
+from services import cloudinary as my_cloudinary_module
 
 # ================= APP FASTAPI =================
 app = FastAPI(
@@ -15,6 +17,7 @@ app = FastAPI(
 app.include_router(users.router)
 app.include_router(categories.router)
 app.include_router(products.router)
+app.include_router(my_cloudinary_module.router)
 
 # Middlewares
 app.add_middleware(
@@ -23,6 +26,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Cloudinary
+cloudinary.config(
+    cloud_name = settings.CLOUDINARY_CLOUD_NAME,
+    api_key = settings.CLOUDINARY_API_KEY,
+    api_secret = settings.CLOUDINARY_API_SECRET
 )
 
 # EndPoints
