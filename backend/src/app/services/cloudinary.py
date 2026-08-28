@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, status
-from cloudinary import utils as cloudinary_utils
+from fastapi import APIRouter, HTTPException, status, Depends
+from cloudinary.utils import api_sign_request
+from pydantic import EmailStr
 import time
 
 from core.config import settings
 from schemas.schemas import SignatureResponse
+from core.security import get_current_user
 
 #Routers
 router = APIRouter(prefix="/cloudinary")
@@ -12,7 +14,7 @@ router = APIRouter(prefix="/cloudinary")
 
 #Generar firma
 @router.post("/signature", status_code=status.HTTP_201_CREATED, response_model=SignatureResponse)
-async def cloudinary_signature() -> SignatureResponse:
+async def cloudinary_signature(current_user: EmailStr = Depends(get_current_user)) -> SignatureResponse:
     #Crear los parámetros a firmar
     params_to_sign = {
         "timestamp": int(time.time()), #Tiempo actual en segundos contados desde Epoch (1ro de enero de 1970).
@@ -21,7 +23,7 @@ async def cloudinary_signature() -> SignatureResponse:
     }
     
     #Crear la firma
-    signature = cloudinary_utils.api_sign_request(params_to_sign)
+    signature = api_sign_request(params_to_sign, settings.CLOUDINARY_API_SECRET)
     
     #Crear el SignatureResponse
     response: SignatureResponse = SignatureResponse(
