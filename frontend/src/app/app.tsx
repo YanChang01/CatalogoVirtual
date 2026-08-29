@@ -19,10 +19,11 @@ function App() {
       <Routes>
         <Route element={<GuestRoute />}>
           <Route path={routes.auth.login.path} element={<LoginPage />} />
-          <Route path={routes.home.path} element={<HomePage />} />
-          <Route path={routes.products.path} element={<Catalog />} />
-          <Route path={routes.product.path} element={<ProductDetail />} />
         </Route>
+
+        <Route path={routes.home.path} element={<HomePage />} />
+        <Route path={routes.products.path} element={<Catalog />} />
+        <Route path={routes.product.path} element={<ProductDetail />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
