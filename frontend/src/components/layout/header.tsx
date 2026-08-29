@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Search, MessageCircle, Menu, X, LogOut } from "lucide-react";
+import { Search, MessageCircle, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { WHATSAPP_NUMBER } from "@/config/constants";
+import { routes } from "@/config/routes";
 import { useAuth } from "@/features/auth/useAuth";
 
 export default function Header() {
@@ -48,6 +49,18 @@ export default function Header() {
             </span>
           </a>
           {isAuthenticated && (
+            <Link
+              to={routes.admin.dashboard.path}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Admin"
+            >
+              <LayoutDashboard size={18} />
+              <span className="hidden sm:inline text-sm tracking-widest uppercase">
+                Admin
+              </span>
+            </Link>
+          )}
+          {isAuthenticated && (
             <button
               onClick={logout}
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -78,6 +91,15 @@ export default function Header() {
           >
             Catálogo
           </Link>
+          {isAuthenticated && (
+            <Link
+              to={routes.admin.dashboard.path}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+              onClick={() => setMenuOpen(false)}
+            >
+              Admin
+            </Link>
+          )}
           {isAuthenticated && (
             <button
               onClick={() => {
