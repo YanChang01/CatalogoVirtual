@@ -347,6 +347,45 @@ export const ProductUpdateSchema = {
   title: "ProductUpdate",
 } as const;
 
+export const SignatureResponseSchema = {
+  properties: {
+    signature: {
+      type: "string",
+      title: "Signature",
+    },
+    timestamp: {
+      type: "integer",
+      title: "Timestamp",
+    },
+    api_key: {
+      type: "string",
+      title: "Api Key",
+    },
+    cloud_name: {
+      type: "string",
+      title: "Cloud Name",
+    },
+    upload_preset: {
+      type: "string",
+      title: "Upload Preset",
+    },
+    folder: {
+      type: "string",
+      title: "Folder",
+    },
+  },
+  type: "object",
+  required: [
+    "signature",
+    "timestamp",
+    "api_key",
+    "cloud_name",
+    "upload_preset",
+    "folder",
+  ],
+  title: "SignatureResponse",
+} as const;
+
 export const UserCreateSchema = {
   properties: {
     fullname: {

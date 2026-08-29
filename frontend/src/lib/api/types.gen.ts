@@ -197,6 +197,36 @@ export type ProductUpdate = {
 };
 
 /**
+ * SignatureResponse
+ */
+export type SignatureResponse = {
+  /**
+   * Signature
+   */
+  signature: string;
+  /**
+   * Timestamp
+   */
+  timestamp: number;
+  /**
+   * Api Key
+   */
+  api_key: string;
+  /**
+   * Cloud Name
+   */
+  cloud_name: string;
+  /**
+   * Upload Preset
+   */
+  upload_preset: string;
+  /**
+   * Folder
+   */
+  folder: string;
+};
+
+/**
  * UserCreate
  */
 export type UserCreate = {
@@ -1144,6 +1174,23 @@ export type Restaurar2ProductsRestaurarPatchResponses = {
 
 export type Restaurar2ProductsRestaurarPatchResponse =
   Restaurar2ProductsRestaurarPatchResponses[keyof Restaurar2ProductsRestaurarPatchResponses];
+
+export type CloudinarySignatureCloudinarySignaturePostData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/cloudinary/signature";
+};
+
+export type CloudinarySignatureCloudinarySignaturePostResponses = {
+  /**
+   * Successful Response
+   */
+  201: SignatureResponse;
+};
+
+export type CloudinarySignatureCloudinarySignaturePostResponse =
+  CloudinarySignatureCloudinarySignaturePostResponses[keyof CloudinarySignatureCloudinarySignaturePostResponses];
 
 export type RootGetData = {
   body?: never;
