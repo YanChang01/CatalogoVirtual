@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { createProduct, updateProduct } from "@/features/admin/api/products";
 import { fetchAdminCategories } from "@/features/admin/api/categories";
+import { ImageUploader } from "@/features/admin/components/ImageUploader";
 import type { CategoryResponse } from "@/lib/api/types.gen";
 
 interface ProductFormProps {
@@ -42,7 +43,9 @@ export function ProductForm({
   const [description, setDescription] = useState(
     initialData?.description ?? "",
   );
-  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? "");
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    initialData?.imageUrl ?? null,
+  );
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true);
   const [categoryId, setCategoryId] = useState<string>(
     initialData ? String(initialData.categoryId) : "",
@@ -83,7 +86,7 @@ export function ProductForm({
         name: name.trim(),
         price: Number(price),
         description: description.trim() || null,
-        image_url: imageUrl.trim() || null,
+        image_url: imageUrl ?? null,
         is_active: isActive,
         category_id: Number(categoryId),
       };
@@ -176,34 +179,13 @@ export function ProductForm({
             className="flex w-full rounded-lg border border-input bg-card px-3 py-2 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
-        <Input
-          name="imageUrl"
-          label="URL de imagen"
-          type="url"
-          placeholder="https://..."
+        <ImageUploader
           value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          helperText="Opcional. Debe ser una URL válida."
+          onChange={setImageUrl}
+          productName={name}
+          disabled={saving}
         />
-        {imageUrl.trim() && (
-          <div className="flex items-center gap-3 rounded-lg border border-dashed p-3">
-            <img
-              src={imageUrl.trim()}
-              alt={`Vista previa de ${name || "producto"}`}
-              className="size-16 shrink-0 rounded-sm border object-cover"
-              onError={(e) => {
-                e.currentTarget.style.opacity = "0";
-              }}
-              onLoad={(e) => {
-                e.currentTarget.style.opacity = "1";
-              }}
-              style={{ opacity: 0 }}
-            />
-            <p className="text-xs text-muted-foreground">
-              Vista previa de la imagen.
-            </p>
-          </div>
-        )}
+
         <label className="flex items-center justify-between gap-2 text-sm font-medium text-foreground">
           Producto activo
           <Switch
