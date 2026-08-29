@@ -19,15 +19,17 @@ function App() {
       <Routes>
         <Route element={<GuestRoute />}>
           <Route path={routes.auth.login.path} element={<LoginPage />} />
-        </Route>
-
-        <Route element={<ProtectedRoute />}>
           <Route path={routes.home.path} element={<HomePage />} />
           <Route path={routes.products.path} element={<Catalog />} />
           <Route path={routes.product.path} element={<ProductDetail />} />
+        </Route>
 
+        <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to={routes.admin.products.path} replace />} />
+            <Route
+              index
+              element={<Navigate to={routes.admin.products.path} replace />}
+            />
             <Route path="productos" element={<AdminProductsPage />} />
             <Route path="categorias" element={<AdminCategoriesPage />} />
             <Route path="usuarios" element={<AdminUsersPage />} />
