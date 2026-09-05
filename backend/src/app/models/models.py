@@ -62,15 +62,4 @@ class Product(Base, table=True):
     updated_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False, index=True))
     is_deleted: bool = Field(default=False, index=True, nullable=False)
     
-    category: "Category" = Relationship(back_populates="products")
-    
-    
-    
-    
-    
-
-
-
-
-
-
+    category: "Category" = Relationship(back_populates="products") 
