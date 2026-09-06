@@ -37,7 +37,7 @@ export function HomeHero() {
       </div>
       <div className="relative min-h-[50vh] lg:min-h-0 bg-muted overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1653974123568-b5eff6d851e1?w=1200&h=1400&fit=crop&auto=format"
+          src="./src/assets/hero.jpg"
           alt="Habitación íntima de lujo"
           className="absolute inset-0 w-full h-full object-cover opacity-70"
         />
