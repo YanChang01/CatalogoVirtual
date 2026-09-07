@@ -14,7 +14,7 @@ from core.config import settings
 
 #Login
 async def login(form: OAuth2PasswordRequestForm, session: AsyncSession) -> dict:
-    query = await session.exec(select(User).where(User.email == form.username))
+    query = await session.exec(select(User).where(User.email == form.username, User.is_deleted == False))
     db_user: User = query.first()
     
     if not db_user:
