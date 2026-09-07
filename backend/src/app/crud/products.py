@@ -1,11 +1,10 @@
 from fastapi import HTTPException, status
-from typing import Optional, List
+from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlmodel import select, update, delete, func, and_, or_, not_
-from datetime import datetime, timezone, timedelta
+from sqlmodel import select
 
 from models.models import Product, Category
-from schemas.schemas import ProductCreate, ProductResponse, ProductUpdate, ProductWithCategory
+from schemas.schemas import ProductCreate, ProductUpdate
 
 #Create
 async def create_product(product: ProductCreate, session: AsyncSession) -> Product:

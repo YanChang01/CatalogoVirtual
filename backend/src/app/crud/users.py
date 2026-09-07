@@ -1,15 +1,15 @@
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from typing import Optional, List
+from typing import List
 from pydantic import EmailStr
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlmodel import select, update, delete, func, and_, or_, not_
+from sqlmodel import select, or_
 from datetime import datetime, timezone, timedelta
 from jose.jwt import encode
 
 from models.models import User
-from schemas.schemas import UserCreate, UserResponse, UserUpdate
-from core.security import password_hash, verify_password, get_current_user
+from schemas.schemas import UserCreate, UserUpdate
+from core.security import password_hash, verify_password
 from core.config import settings
 
 #Login
