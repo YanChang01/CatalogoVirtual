@@ -1,10 +1,9 @@
-from fastapi import APIRouter, status, HTTPException, Depends
-from typing import List, Optional
+from fastapi import APIRouter, status, Depends
+from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from pydantic import EmailStr
 
-from models.models import Category
-from schemas.schemas import CategoryCreate, CategoryResponse, CategoryUpdate, CategoryWithProducts
+from schemas.schemas import CategoryCreate, CategoryResponse, CategoryUpdate
 from crud.categories import create_category, read_category, read_categories, read_category_deleted, read_categories_deleted, update_category, delete_category, delete_categories, restaurar_category, restaurar_categories
 from core.client import get_async_session
 from core.security import get_current_user
