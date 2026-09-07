@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, status, Depends
 from cloudinary.utils import api_sign_request
 from pydantic import EmailStr
 import time
