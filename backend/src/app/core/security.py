@@ -3,7 +3,6 @@ from fastapi.security import OAuth2PasswordBearer
 from bcrypt import gensalt, hashpw, checkpw
 from jose import jwt, JWTError
 from core.config import settings
-from datetime import datetime
 from pydantic import EmailStr
 
 """
