@@ -14,12 +14,6 @@ router = APIRouter(prefix="/users")
 
 #EndPoints
 
-#Registro (Solamente para pruebas)
-@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-async def register(user: UserCreate, session: AsyncSession = Depends(get_async_session)) -> UserResponse:
-    
-    return await create_user(user=user, session=session)
-
 #Inicio de Sesión
 @router.post("/login", status_code=status.HTTP_201_CREATED)
 async def iniciar_session(form: OAuth2PasswordRequestForm = Depends(), session: AsyncSession = Depends(get_async_session)) -> dict:
