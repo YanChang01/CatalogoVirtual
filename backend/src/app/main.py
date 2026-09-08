@@ -22,7 +22,7 @@ app.include_router(my_cloudinary_module.router)
 # Middlewares
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[settings.FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,16 +34,3 @@ cloudinary.config(
     api_key = settings.CLOUDINARY_API_KEY,
     api_secret = settings.CLOUDINARY_API_SECRET
 )
-
-# EndPoints
-@app.get("/", status_code=status.HTTP_200_OK)
-async def root() -> dict:
-    return {
-        "título": app.title,
-        "descripción": app.description,
-        "versión": app.version,
-    }
-    
-
-
-
