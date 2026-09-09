@@ -1,23 +1,16 @@
 from logging.config import fileConfig
-
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncConnection, create_async_engine
 from asyncio import get_running_loop, new_event_loop, set_event_loop
-
 from alembic import context
-
 from dotenv import load_dotenv
 from os import getenv
 
-from app.models import models
+from ..app.models import models
+from ..app.core.config import settings
 
-
-#Cargar Variables de Entorno.
-load_dotenv()
-DATABASE_URL = getenv("DATABASE_URL")
-
-if not DATABASE_URL:
+if not settings.DATABASE_URL:
     raise ValueError("URL de conexión inválida")
 
 # this is the Alembic Config object, which provides
@@ -25,7 +18,7 @@ if not DATABASE_URL:
 config = context.config
 
 #Estableciendo la configuración para la URL de conexión.
-config.set_main_option(name="sqlalchemy.url", value=DATABASE_URL)
+config.set_main_option(name="sqlalchemy.url", value=settings.DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -87,7 +80,7 @@ async def run_migrations_online():
 
     """
     connectable = create_async_engine(
-        DATABASE_URL,
+        settings.DATABASE_URL,
         poolclass = pool.AsyncAdaptedQueuePool
     )
 

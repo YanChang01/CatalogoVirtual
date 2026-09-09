@@ -3,10 +3,10 @@ from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from pydantic import EmailStr
 
-from schemas.schemas import ProductCreate, ProductResponse, ProductUpdate
-from crud.products import create_product, read_product, read_products, read_product_deleted, read_products_deleted, update_product, delete_product, delete_products, restaurar_product, restaurar_products
-from core.client import get_async_session
-from core.security import get_current_user
+from ..schemas.schemas import ProductCreate, ProductResponse, ProductUpdate
+from ..crud.products import create_product, read_product, read_products, read_product_deleted, read_products_deleted, update_product, delete_product, delete_products, restaurar_product, restaurar_products
+from ..core.client import get_async_session
+from ..core.security import get_current_user
 
 #Router
 router = APIRouter(prefix="/products")

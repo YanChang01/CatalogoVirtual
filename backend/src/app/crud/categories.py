@@ -3,8 +3,8 @@ from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 
-from models.models import Category
-from schemas.schemas import CategoryCreate, CategoryUpdate
+from ..models.models import Category
+from ..schemas.schemas import CategoryCreate, CategoryUpdate
 
 #Create
 async def create_category(category: CategoryCreate, session: AsyncSession) -> Category:

@@ -4,10 +4,10 @@ from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from pydantic import EmailStr
 
-from schemas.schemas import UserCreate, UserResponse, UserUpdate
-from crud.users import create_user, read_user, read_users, read_user_deleted, read_users_deleted, update_user, delete_user, delete_users, restaurar_user, restaurar_users, login
-from core.client import get_async_session
-from core.security import get_current_user
+from ..schemas.schemas import UserCreate, UserResponse, UserUpdate
+from ..crud.users import create_user, read_user, read_users, read_user_deleted, read_users_deleted, update_user, delete_user, delete_users, restaurar_user, restaurar_users, login
+from ..core.client import get_async_session
+from ..core.security import get_current_user
 
 #Router
 router = APIRouter(prefix="/users")

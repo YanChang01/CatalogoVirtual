@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import Optional, List
 from pydantic import EmailStr, HttpUrl, BaseModel
 
-from models.models import PhoneStr
+from ..models.models import PhoneStr
 
 # ============================
 # Clases Base

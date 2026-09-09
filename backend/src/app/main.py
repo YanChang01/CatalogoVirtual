@@ -1,10 +1,10 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import cloudinary
 
-from core.config import settings
-from routers import users, categories, products
-from services import cloudinary as my_cloudinary_module
+from .core.config import settings
+from .routers import users, categories, products
+from .services import cloudinary as my_cloudinary_module
 
 # ================= APP FASTAPI =================
 app = FastAPI(

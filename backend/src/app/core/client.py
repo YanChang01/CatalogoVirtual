@@ -1,9 +1,10 @@
 from fastapi import HTTPException, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
-from pydantic import ValidationError
-from core.config import settings
 import logging
+
+from .config import settings
+
 
 # Configuración de logging (solo errores críticos en producción)
 logger = logging.getLogger(__name__)

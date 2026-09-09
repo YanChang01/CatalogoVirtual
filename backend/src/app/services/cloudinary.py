@@ -3,9 +3,9 @@ from cloudinary.utils import api_sign_request
 from pydantic import EmailStr
 import time
 
-from core.config import settings
-from schemas.schemas import SignatureResponse
-from core.security import get_current_user
+from ..core.config import settings
+from ..schemas.schemas import SignatureResponse
+from ..core.security import get_current_user
 
 #Routers
 router = APIRouter(prefix="/cloudinary")

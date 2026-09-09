@@ -2,8 +2,9 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from bcrypt import gensalt, hashpw, checkpw
 from jose import jwt, JWTError
-from core.config import settings
 from pydantic import EmailStr
+
+from .config import settings
 
 """
 Estructura del JWT.

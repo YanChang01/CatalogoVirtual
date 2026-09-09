@@ -7,10 +7,10 @@ from sqlmodel import select, or_
 from datetime import datetime, timezone, timedelta
 from jose.jwt import encode
 
-from models.models import User
-from schemas.schemas import UserCreate, UserUpdate
-from core.security import password_hash, verify_password
-from core.config import settings
+from ..models.models import User
+from ..schemas.schemas import UserCreate, UserUpdate
+from ..core.security import password_hash, verify_password
+from ..core.config import settings
 
 #Login
 async def login(form: OAuth2PasswordRequestForm, session: AsyncSession) -> dict:

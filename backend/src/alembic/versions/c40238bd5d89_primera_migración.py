@@ -6,11 +6,11 @@ Create Date: 2026-07-16 21:56:58.544766
 
 """
 from typing import Sequence, Union
-
 from alembic import op
 import sqlalchemy as sa
 import sqlmodel
-import app
+
+from ...app.models.models import HttpUrlType
 
 
 # revision identifiers, used by Alembic.
@@ -59,7 +59,7 @@ def upgrade() -> None:
     sa.Column('price', sa.Numeric(precision=12, scale=2), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(length=500), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('image_url', app.models.models.HttpUrlType(length=2083), nullable=True),
+    sa.Column('image_url', HttpUrlType(length=2083), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('is_deleted', sa.Boolean(), nullable=False),
