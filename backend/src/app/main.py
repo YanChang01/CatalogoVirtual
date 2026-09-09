@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 import cloudinary
 
@@ -34,3 +34,15 @@ cloudinary.config(
     api_key = settings.CLOUDINARY_API_KEY,
     api_secret = settings.CLOUDINARY_API_SECRET
 )
+
+#EndPoints
+@app.get("/", status_code=status.HTTP_200_OK)
+async def root() -> dict:
+    
+    return {
+        "Title": app.title,
+        "Description": app.description,
+        "Version": app.version,
+        "Author1": settings.PROJECT_AUTHOR_1,
+        "Author2": settings.PROJECT_AUTHOR_2
+    }
