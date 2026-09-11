@@ -28,22 +28,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </h3>
         <dl className="space-y-2 text-muted-foreground">
           <div className="flex gap-4">
-            <dt className="font-medium min-w-[120px]">Categoría:</dt>
-            <dd>{product.category}</dd>
-          </div>
-          <div className="flex gap-4">
             <dt className="font-medium min-w-[120px]">Estado:</dt>
             <dd>{product.isActive ? "Disponible" : "No disponible"}</dd>
-          </div>
-          <div className="flex gap-4">
-            <dt className="font-medium min-w-[120px]">Creado:</dt>
-            <dd>
-              {new Date(product.createdAt).toLocaleDateString("es-ES", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </dd>
           </div>
           <div className="flex gap-4">
             <dt className="font-medium min-w-[120px]">Actualizado:</dt>
