@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { client } from "@/lib/api/client.gen";
 import { routes } from "@/config/routes";
 import { AuthContext } from "@/features/auth/context";
+import { localEnv } from "@/config/env";
 
 function getInitialToken(): string | null {
   return localStorage.getItem("token_jwt");
@@ -22,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading] = useState(false);
 
   const login = async (credentials: { username: string; password: string }) => {
-    const response = await fetch("http://127.0.0.1:8000/users/login", {
+    const response = await fetch(localEnv.API_BASE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -40,12 +41,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error((data as { detail?: string }).detail || "Login failed");
     }
 
-    const accessToken = (data as { access_token?: string; token?: string; accessToken?: string }).access_token
-      ?? (data as { access_token?: string; token?: string; accessToken?: string }).token
-      ?? (data as { access_token?: string; token?: string; accessToken?: string }).accessToken;
+    const accessToken =
+      (data as { access_token?: string; token?: string; accessToken?: string })
+        .access_token ??
+      (data as { access_token?: string; token?: string; accessToken?: string })
+        .token ??
+      (data as { access_token?: string; token?: string; accessToken?: string })
+        .accessToken;
 
     if (!accessToken) {
-      throw new Error("No access_token in login response: " + JSON.stringify(data));
+      throw new Error(
+        "No access_token in login response: " + JSON.stringify(data),
+      );
     }
 
     localStorage.setItem("token_jwt", accessToken);
