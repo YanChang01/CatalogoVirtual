@@ -21,5 +21,7 @@ export type CreateClientConfig<T extends ClientOptions = ClientOptions2> = (
 ) => Config<Required<ClientOptions> & T>;
 
 export const client = createClient(
-  createConfig<ClientOptions2>({ baseURL: "http://127.0.0.1:8000" }),
+  createConfig<ClientOptions2>({
+    baseURL: "https://catalogovirtualbackend-930b1295.fastapicloud.dev",
+  }),
 );

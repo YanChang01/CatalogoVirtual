@@ -112,10 +112,10 @@ export const buildClientParams = (
   fields: FieldsConfig,
 ) => {
   const params: Params = {
-    body: Object.create(null),
-    headers: Object.create(null),
-    path: Object.create(null),
-    query: Object.create(null),
+    body: {},
+    headers: {},
+    path: {},
+    query: {},
   };
 
   const map = buildKeyMap(fields);
