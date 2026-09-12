@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading] = useState(false);
 
   const login = async (credentials: { username: string; password: string }) => {
-    const response = await fetch(localEnv.API_BASE_URL, {
+    const response = await fetch(localEnv.API_BASE_URL + "/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
