@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ChevronRight } from "lucide-react";
+import heroImage from "../../../assets/hero.jpg"
 
 export function HomeHero() {
   return (
@@ -36,8 +37,8 @@ export function HomeHero() {
       </div>
       <div className="relative min-h-[50vh] lg:min-h-0 bg-muted overflow-hidden">
         <img
-          src="./src/assets/hero.jpg"
-          alt="Habitación íntima de lujo"
+          src={heroImage}
+          alt="Secret Shop"
           className="absolute inset-0 w-full h-full object-cover opacity-70"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/20 lg:to-transparent" />
