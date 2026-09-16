@@ -6,19 +6,18 @@ export function HomeHero() {
     <section className="relative min-h-[calc(100vh-4rem)] grid grid-cols-1 lg:grid-cols-2">
       <div className="flex flex-col justify-center px-8 md:px-16 lg:px-20 py-24 bg-background">
         <p className="text-xs tracking-[0.25em] uppercase text-primary mb-6">
-          Nueva Colección 2026
+          Sex Toys 2026
         </p>
         <h1
           className="text-5xl md:text-6xl xl:text-7xl leading-[1.05] mb-8 text-foreground"
           style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
         >
-          El placer
+          Tu satisfacción,
           <br />
-          <em className="not-italic text-primary">es tuyo.</em>
+          <em className="not-italic text-primary">nuestra prioridad.</em>
         </h1>
         <p className="text-muted-foreground text-lg leading-relaxed max-w-md mb-10">
-          Productos de bienestar íntimo de calidad premium. Diseñados con
-          cuidado, entregados con discreción absoluta.
+          Descubre nuevas formas de placer con nuestra colección de juguetes para adultos.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
